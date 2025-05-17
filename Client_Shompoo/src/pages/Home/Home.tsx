@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { getAllProducts } from 'services/product/product.service';
+import type { Product } from 'types/product';
 
 function Home() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Product[] | null>(null)
   const [loading, setLoading] = useState(true);
-
-  const apiUrl = import.meta.env.VITE_API_URL;  // Lấy URL từ .env
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/data-endpoint`);
-        setData(response.data);
+        const result = await getAllProducts();
+        setData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -20,14 +20,12 @@ function Home() {
     };
 
     fetchData();
-  }, [apiUrl]);
+  }, []);
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <div>
-      {/* <h1>Data from Backend API</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre> */}
 
       <main className="max-w-7xl mx-auto p-4 sm:p-6 md:p-8">
    <section className="flex flex-col md:flex-row items-center bg-gray-100 rounded-lg p-6 md:p-10 gap-6 md:gap-12">
@@ -155,166 +153,30 @@ function Home() {
       </p>
      </div>
     </div>
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
-     <article className="border border-gray-200 rounded-md p-3 flex flex-col items-center text-center">
-      <img alt="Bottle of Mixed Nuts Berries Pack product with dark red label" className="mb-3 max-w-full h-auto" height="160" src="https://storage.googleapis.com/a1aa/image/6b1caa7f-f750-4aa5-ca12-1f413a618fec.jpg" width="120"/>
-      <p className="text-xs text-gray-500 mb-1">
-       Dried Fruits
-      </p>
-      <h3 className="text-xs font-semibold text-gray-800 mb-1">
-       Mixed Nuts Berries Pack
-      </h3>
-      <div className="flex items-center gap-1 mb-1">
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="far fa-star text-yellow-400 text-xs">
-       </i>
+  <div className="flex overflow-x-auto gap-4 p-3">
+  {data?.map((item) => (
+    <div
+      key={item._id}
+  className="w-[280px] border border-gray-200 rounded-md p-3 flex flex-col items-center text-center shadow hover:shadow-lg transition flex-shrink-0"
+    ><img
+  src={item.images?.[0]}
+  alt={item.name}
+  className="mb-3 w-full h-48 object-contain rounded"
+/>
+
+
+      <h3 className="font-semibold text-lg">{item.name}</h3>
+      <div className="text-sm text-gray-500">{item.origin}</div>
+      <div className="mt-1 text-red-600 font-bold">
+        {item.discount_price.toLocaleString()}₫
       </div>
-      <div className="flex gap-2 items-center">
-       <span className="text-sm font-bold text-gray-900">
-        $56.00
-       </span>
-       <span className="text-xs line-through text-gray-400">
-        $45.00
-       </span>
+      <div className="text-gray-400 line-through text-sm">
+        {item.price.toLocaleString()}₫
       </div>
-     
-     </article>
-     <article className="border border-gray-200 rounded-md p-3 flex flex-col items-center text-center relative">
-      <img alt="Two boxes of Multi Grain Combo Cookies with beige packaging" className="mb-3 max-w-full h-auto" height="160" src="https://storage.googleapis.com/a1aa/image/5c59f301-d631-4967-e1ec-e4397c08c41d.jpg" width="120"/>
-      <p className="text-xs text-gray-500 mb-1">
-       Cookies
-      </p>
-      <h3 className="text-xs font-semibold text-gray-800 mb-1">
-       Multi Grain Combo Cookies
-      </h3>
-      <div className="flex items-center gap-1 mb-1">
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="far fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="far fa-star text-yellow-400 text-xs">
-       </i>
-      </div>
-      <div className="flex gap-2 items-center">
-       <span className="text-sm font-bold text-gray-900">
-        $30.00
-       </span>
-       <span className="text-xs line-through text-gray-400">
-        $25.00
-       </span>
-      </div>
-      <span className="text-xs text-gray-400">
-       10kg
-      </span>
-      <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded">
-       SALE
-      </div>
-     </article>
-     <article className="border border-gray-200 rounded-md p-3 flex flex-col items-center text-center">
-      <img alt="Fresh Mango Juice Pack bottle with yellow cap and mango image on label" className="mb-3 max-w-full h-auto" height="160" src="https://storage.googleapis.com/a1aa/image/aa0175a7-bc2c-4c9a-0413-8bde20e93daa.jpg" width="120"/>
-      <p className="text-xs text-gray-500 mb-1">
-       Foods
-      </p>
-      <h3 className="text-xs font-semibold text-gray-800 mb-1">
-       Fresh Mango Juice Pack
-      </h3>
-      <div className="flex items-center gap-1 mb-1">
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="far fa-star text-yellow-400 text-xs">
-       </i>
-      </div>
-      <div className="flex gap-2 items-center">
-       <span className="text-sm font-bold text-gray-900">
-        $65.00
-       </span>
-       <span className="text-xs line-through text-gray-400">
-        $46.00
-       </span>
-      </div>
-     </article>
-     <article className="border border-gray-200 rounded-md p-3 flex flex-col items-center text-center relative">
-      <img alt="Two bottles of Dates Value Fresh Pouch with red and white labels" className="mb-3 max-w-full h-auto" height="160" src="https://storage.googleapis.com/a1aa/image/4ec2bb6f-6323-4048-0676-dd1525a29b23.jpg" width="120"/>
-      <p className="text-xs text-gray-500 mb-1">
-       Dried Fruits
-      </p>
-      <h3 className="text-xs font-semibold text-gray-800 mb-1">
-       Dates Value Fresh Pouch
-      </h3>
-      <div className="flex items-center gap-1 mb-1">
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="far fa-star text-yellow-400 text-xs">
-       </i>
-      </div>
-      <div className="flex gap-2 items-center">
-       <span className="text-sm font-bold text-gray-900">
-        $85.00
-       </span>
-       <span className="text-xs line-through text-gray-400">
-        $78.60
-       </span>
-      </div>
-      <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-semibold px-2 py-0.5 rounded" >
-       SALE
-      </div>
-     </article>
-     <article className="border border-gray-200 rounded-md p-3 flex flex-col items-center text-center">
-      <img alt="Stick Fiber Masala Magic bottle with black label and pump" className="mb-3 max-w-full h-auto" height="160" src="https://storage.googleapis.com/a1aa/image/62a3b87e-5d4b-49f5-b0bf-04daef37ad03.jpg" width="120"/>
-      <p className="text-xs text-gray-500 mb-1">
-       Foods
-      </p>
-      <h3 className="text-xs font-semibold text-gray-800 mb-1">
-       Stick Fiber Masala Magic
-      </h3>
-      <div className="flex items-center gap-1 mb-1">
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="fas fa-star text-yellow-400 text-xs">
-       </i>
-       <i className="far fa-star text-yellow-400 text-xs">
-       </i>
-      </div>
-      <div className="flex gap-2 items-center">
-       <span className="text-sm font-bold text-gray-900">
-        $50.00
-       </span>
-       <span className="text-xs line-through text-gray-400">
-        $45.00
-       </span>
-      </div>
-      <span className="text-xs text-green-600 font-semibold">
-       NEW
-      </span>
-     </article>
     </div>
+  ))}
+</div>
+
    </section>
   </main>
 
