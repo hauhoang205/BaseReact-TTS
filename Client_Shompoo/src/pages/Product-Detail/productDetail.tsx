@@ -1,56 +1,163 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
+import type { Product } from "types/product";
+import { getAllProducts } from "services/product/product.service";
 
 const ProductDetail = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [data, setData] = useState<Product[] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [currentImage, setCurrentImage] = useState<string>("");
+  const [quantity, setQuantity] = useState<number>(1);
+
+  // Lấy chi tiết sản phẩm
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8000/api/products/${id}`);
+        setProduct(res.data);
+        setCurrentImage(res.data.images[0]); // ảnh chính mặc định
+         setQuantity(1); // Đặt lại số lượng về 1 khi sản phẩm thay đổi
+      } catch (error) {
+        console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  // Lấy 4 sản phẩm liên quan
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await getAllProducts();
+        setData(result.slice(0, 4));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) return <p>Đang tải dữ liệu...</p>;
+  if (!product) return <p>Không tìm thấy sản phẩm</p>;
+
+  const handleIncrease = () => {
+    if (quantity < product.stock_quantity) {
+      setQuantity((prev) => prev + 1);
+    }
+  };
+
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity((prev) => prev - 1);
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Product Header */}
-      <div className="flex flex-col md:flex-row">
-        <div className="md:w-1/2">
-          <img
-            src="https://media.hasaki.vn/hsk/dau-goi-nguyen-xuan-xanh-la.jpg" 
-            alt="Product"
-            className="w-full h-auto rounded-lg"
-          />
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Left: Image */}
+        <div className="lg:w-1/2">
+          <div className="border border-gray-200 rounded-md p-4">
+            <img
+              src={currentImage}
+              alt={product.name}
+              className="w-full h-auto object-contain rounded-md"
+            />
+          </div>
+          {product.images.length > 1 && (
+            <div className="flex gap-4 mt-4">
+              {product.images.map((img, idx) => (
+                <button
+                  key={idx}
+                  className={`border rounded-md p-1 w-16 h-16 flex items-center justify-center ${
+                    currentImage === img ? "ring-2 ring-green-600" : "border-gray-300"
+                  }`}
+                  onClick={() => setCurrentImage(img)}
+                >
+                  <img src={img} alt={`Ảnh ${idx + 1}`} className="object-contain w-full h-full" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-        <div className="md:w-1/2 md:pl-8">
-          <h1 className="text-2xl font-bold">Dầu Gội Dược Liệu Nguyên Xuân Xanh Lá</h1>
-          <p className="text-lg text-gray-500">SKU: WH12</p>
-          <p className="text-xl font-semibold text-green-600">
-            $684.00 <span className="line-through text-gray-400">$1,299.00</span> <span className="text-red-500">-78%</span>
-          </p>
-          <div className="mt-4">
-            <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+
+        {/* Right: Details */}
+        <div className="lg:w-1/2 flex flex-col">
+          <h1 className="text-gray-800 text-lg font-medium mb-2">{product.name}</h1>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="text-2xl font-bold text-gray-900">
+              {product.discount_price.toLocaleString()}₫
+            </div>
+            <div className="text-green-700 font-semibold text-base">
+              -{Math.round(((product.price - product.discount_price) / product.price) * 100)}%
+            </div>
+            <div className="text-gray-400 line-through text-base">
+              {product.price.toLocaleString()}₫
+            </div>
+            <div className="ml-auto text-sm font-semibold text-gray-700">
+              Mã SP: <span className="font-normal">{product._id}</span>
+            </div>
+          </div>
+
+          <div className="text-green-600 font-semibold text-sm mb-4">
+            {product.stock_quantity > 0 ? "Còn hàng" : "Hết hàng"}
+          </div>
+
+          <p className="text-sm text-gray-500 mb-6 leading-relaxed">{product.description}</p>
+
+          <ul className="text-sm text-gray-600 mb-6 space-y-1 list-disc list-inside">
+            <li><span className="font-semibold">Dung tích:</span> {product.size}</li>
+            <li><span className="font-semibold">Hương thơm:</span> {product.fragrance}</li>
+            <li><span className="font-semibold">Loại tóc phù hợp:</span> {product.hair_type}</li>
+            <li><span className="font-semibold">Xuất xứ:</span> {product.origin}</li>
+          </ul>
+
+          <div className="flex items-center gap-2">
+            <button onClick={handleDecrease} className="bg-gray-700 text-white px-3 py-1 rounded">
+              -
+            </button>
+            <div className="border px-4 py-1 rounded text-sm">{quantity}</div>
+            <button onClick={handleIncrease} className="bg-gray-700 text-white px-3 py-1 rounded">
+              +
+            </button>
+            <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2 text-sm">
               Thêm vào giỏ hàng
             </button>
           </div>
         </div>
       </div>
 
-      {/* Details Section */}
-      <div className="mt-8">
-        <h2 className="text-xl font-bold">Chi tiết sản phẩm</h2>
-        <p>
-          Dầu gội dược liệu Xanh Lá giúp dưỡng tóc và da đầu, sạch gàu.
-        </p>
-        <ul className="list-disc pl-5 mt-2">
-          <li>Chứa: Hạt & Lỗ</li>
-          <li>Chất liệu: Polyethylene Chorlide</li>
-          <li>Màu sắc: Xanh lá cây</li>
-        </ul>
-      </div>
-
-      {/* Related Products Section */}
-      <div className="mt-8">
-        <h2 className="text-xl font-bold">Sản phẩm liên quan</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Repeat for related products */}
-          <div className="border rounded-lg p-4">
-            <img src="https://vn-test-11.slatic.net/p/64c933d8efd8329248ba7ee34db92bcc.jpg" alt="Related Product" className="w-full rounded-lg" />
-            <h3 className="mt-2 font-semibold">Sản phẩm 1</h3>
-            <p className="text-gray-500">$25.00</p>
-          </div>
-          {/* Thêm sản phẩm khác tại đây */}
-        </div>
+      {/* Suggestion Products */}
+      <h2 className="text-lg font-semibold mt-10 mb-4">Có thể bạn cũng thích</h2>
+      <div className="flex overflow-x-auto gap-4 p-3">
+        {data?.map((item) => (
+          <Link
+            to={`/products/${item._id}`}
+            key={item._id}
+            className="w-[280px] border border-gray-200 rounded-md p-3 flex flex-col items-center text-center shadow hover:shadow-lg transition flex-shrink-0 hover:scale-105"
+          >
+            <img
+              src={item.images?.[0]}
+              alt={item.name}
+              className="mb-3 w-full h-48 object-contain rounded"
+            />
+            <h3 className="font-semibold text-lg">{item.name}</h3>
+            <div className="text-sm text-gray-500">{item.origin}</div>
+            <div className="mt-1 text-red-600 font-bold">
+              {item.discount_price.toLocaleString()}₫
+            </div>
+            <div className="text-gray-400 line-through text-sm">
+              {item.price.toLocaleString()}₫
+            </div>
+          </Link>
+        ))}
       </div>
     </div>
   );

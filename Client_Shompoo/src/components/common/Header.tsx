@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 type Props = {}
 
@@ -56,13 +57,16 @@ const Header = (props: Props) => {
             </form>
           </div>
           <div className="flex items-center space-x-10 text-[14px] text-gray-700">
-            <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
-              <i className="far fa-user text-[18px]"></i>
-              <div className="leading-none">
-                <div>Account</div>
-                <div className="font-semibold text-[12px]">LOGIN</div>
+            <Link to="/login" className="hover:text-gray-900">
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <i className="fas fa-user text-[18px]"></i>
+                <div className="leading-none">
+                  <div>Account</div>
+                  <div className="font-semibold text-[12px]">LOGIN</div>
+                </div>
               </div>
-            </div>
+            </Link>
+          
             <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
               <i className="far fa-heart text-[18px]"></i>
               <div className="leading-none">
@@ -90,10 +94,11 @@ const Header = (props: Props) => {
             <i className="fas fa-chevron-down text-[12px]"></i>
           </button>
         <nav className="flex gap-x-8 justify-between font-medium px-4">
-  <button className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
+          <Link to="/" className="flex items-center space-x-2 hover:text-green-600 focus:outline-none"><button className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
     <span>Home</span>
     <i className="fas fa-chevron-down text-[12px]"></i>
-  </button>
+  </button></Link>
+  
   <button className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
     <span>Categories</span>
     <i className="fas fa-chevron-down text-[12px]"></i>

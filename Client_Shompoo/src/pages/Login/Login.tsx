@@ -17,14 +17,14 @@ const Login = () => {
         <input type="password" id="password" placeholder="Nhập mật khẩu của bạn" className="mt-1 p-2 border border-gray-300 rounded-md w-full" required />
       </div>
       <div className="flex justify-between items-center mb-4">
-        <a href="#" className="text-sm text-gray-600">Tạo tài khoản</a>
-        <a href="#" className="text-sm text-gray-600">Login</a>
+        <a href="#" className="text-sm text-gray-600">Quên mật khẩu</a>
+        <a href="/register" className="text-sm text-gray-600">Register</a>
       </div>
-      <button type="submit" className="w-full bg-green-600 text-white p-2 rounded-md hover:bg-green-700 transition duration-200">Đăng Ký</button>
+      <button type="submit" className="w-full bg-green-600 text-white p-2 rounded-md hover:bg-green-700 transition duration-200">Đăng Nhập</button>
     </form>
   </div>
   <div className="hidden lg:block lg:w-1/2">
-    <img src="your-image-url.jpg" alt="Your Image" className="w-full h-full object-cover rounded-lg" />
+    <img src="https://admin.daugoimaxkilo.com/Upload/files/banner2.png" alt="Your Image" className="w-full h-full object-cover rounded-lg" />
   </div>
 </div>
 

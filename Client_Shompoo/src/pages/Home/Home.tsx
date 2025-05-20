@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { getAllProducts } from 'services/product/product.service';
 import type { Product } from 'types/product';
+import { Link } from 'react-router-dom';
 
 function Home() {
   const [data, setData] = useState<Product[] | null>(null)
@@ -155,15 +156,16 @@ function Home() {
     </div>
   <div className="flex overflow-x-auto gap-4 p-3">
   {data?.map((item) => (
-    <div
+    <Link
+      to={`/products/${item._id}`}
       key={item._id}
-  className="w-[280px] border border-gray-200 rounded-md p-3 flex flex-col items-center text-center shadow hover:shadow-lg transition flex-shrink-0"
-    ><img
-  src={item.images?.[0]}
-  alt={item.name}
-  className="mb-3 w-full h-48 object-contain rounded"
-/>
-
+      className="w-[280px] border border-gray-200 rounded-md p-3 flex flex-col items-center text-center shadow hover:shadow-lg transition flex-shrink-0 hover:scale-105"
+    >
+      <img
+        src={item.images?.[0]}
+        alt={item.name}
+        className="mb-3 w-full h-48 object-contain rounded"
+      />
 
       <h3 className="font-semibold text-lg">{item.name}</h3>
       <div className="text-sm text-gray-500">{item.origin}</div>
@@ -173,7 +175,7 @@ function Home() {
       <div className="text-gray-400 line-through text-sm">
         {item.price.toLocaleString()}₫
       </div>
-    </div>
+    </Link>
   ))}
 </div>
 
