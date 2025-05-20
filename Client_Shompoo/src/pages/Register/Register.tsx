@@ -26,13 +26,13 @@ const Register = () => {
       </div>
       <div className="flex justify-between items-center mb-4">
         <a href="#" className="text-sm text-gray-600">Quên mật khẩu?</a>
-        <a href="#" className="text-sm text-gray-600">Login</a>
+        <a href="/login" className="text-sm text-gray-600">Login</a>
       </div>
       <button type="submit" className="w-full bg-green-600 text-white p-2 rounded-md hover:bg-green-700 transition duration-200">Đăng Ký</button>
     </form>
   </div>
   <div className="hidden lg:block lg:w-1/2">
-    <img src="your-image-url.jpg" alt="Your Image" className="w-full h-full object-cover rounded-lg" />
+    <img src="https://admin.daugoimaxkilo.com/Upload/files/banner2.png" alt="Your Image" className="w-full h-full object-cover rounded-lg" />
   </div>
 </div>
 

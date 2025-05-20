@@ -1,14 +1,15 @@
 export interface Product {
   _id: string;
-  images?: string[];
   name: string;
-  origin?: string;
-  discount_price: number;
+  origin: string;
+  description: string;
+  images: string[];
+  size: string;
+  fragrance: string;
+  hair_type: string;
+  stock_quantity: number;
   price: number;
-  description?: string;
-  categoryId?: string;
-  stock?: number;
-  sizes?: string[];
-  createdAt?: string;
-  updatedAt?: string;
+  discount_price: number;
+  createdAt: string;
+  updatedAt: string;
 }
