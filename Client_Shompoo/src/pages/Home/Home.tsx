@@ -1,27 +1,10 @@
 import { useEffect, useState } from 'react';
 // import axios from 'axios';
-import { getAllProducts } from 'services/product/product.service';
-import type { Product } from 'types/product';
 import { Link } from 'react-router-dom';
+import { useProducts } from 'hooks/useProduct';
 
 function Home() {
-  const [data, setData] = useState<Product[] | null>(null)
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getAllProducts();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { data, loading } = useProducts();
 
   if (loading) return <div>Loading...</div>;
 
