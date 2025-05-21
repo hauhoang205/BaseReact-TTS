@@ -2,7 +2,15 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const getAllProducts = async()=>{
-    const res = await axios.get(`${API_URL}/products`);
-    return res.data
-}
+export const getAllProducts = async (search?: string) => {
+  try {
+    const url = `${API_URL}/products`;
+    const params = search ? { search } : {};
+
+    const res = await axios.get(url, { params });
+    return res.data;
+  } catch (error) {
+    // Ném lỗi để gọi hàm bên ngoài có thể xử lý
+    throw error;
+  }
+};
