@@ -26,6 +26,7 @@ function Home() {
               className="bg-gray-800 text-white text-sm font-semibold px-5 py-2 rounded hover:bg-gray-900 transition"
               type="button"
             >
+
               Shop Now »
             </button>
           </div>
@@ -37,6 +38,7 @@ function Home() {
               src="https://storage.googleapis.com/a1aa/image/892d8aa0-cf6e-4739-fd84-1f68fdab2cf8.jpg"
               width="400"
             />
+          
           </div>
         </section>
         <section className="mt-10 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 md:gap-6">
@@ -59,6 +61,7 @@ function Home() {
               Tobacco
             </h3>
             <p className="text-xs text-gray-500">45 Items</p>
+
           </div>
           <div className="border border-pink-200 rounded-md p-4 flex flex-col items-center relative">
             <div className="absolute top-2 right-2 bg-pink-200 text-xs text-pink-700 font-semibold px-1.5 rounded">
@@ -69,6 +72,7 @@ function Home() {
               Shampoo
             </h3>
             <p className="text-xs text-gray-500">541 Items</p>
+
           </div>
           <div className="border border-purple-200 rounded-md p-4 flex flex-col items-center relative">
             <div className="absolute top-2 right-2 bg-purple-200 text-xs text-purple-700 font-semibold px-1.5 rounded">
@@ -93,6 +97,7 @@ function Home() {
               Hair Cleanser
             </h3>
             <p className="text-xs text-gray-500">845 Items</p>
+
           </div>
         </section>
         <section className="mt-12">
@@ -101,6 +106,7 @@ function Home() {
               <h2 className="text-gray-800 font-semibold text-lg mb-1">
                 Day Of The
                 <span className="text-green-700">Deal</span>
+
               </h2>
               <p className="text-xs text-gray-500 font-light">
                 Don't wait. The time will never be just right.
@@ -112,6 +118,7 @@ function Home() {
                 <span className="font-semibold">23</span>:
                 <span className="font-semibold">59</span>:
                 <span className="font-semibold">64</span>
+
               </p>
             </div>
           </div>

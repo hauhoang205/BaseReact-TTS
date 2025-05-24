@@ -1,5 +1,6 @@
 import MainLayout from "components/layout/MainLayout";
 import About from "pages/About/About";
+import Cart from "pages/Cart/Cart";
 import Home from "pages/Home";
 import Login from "pages/Login/Login";
 import ProductDetail from "pages/Product-Detail/productDetail";
@@ -31,6 +32,10 @@ export const router = createBrowserRouter([
       {
         path: "/products/:id", 
         element: <ProductDetail/>, 
+      },
+      {
+        path: "/cart",
+        element: <Cart/>
       }
     ],
   },
