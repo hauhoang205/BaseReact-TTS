@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: "/products/:id", // Thay thế bằng đường dẫn sản phẩm cụ thể
+        path: "/products/:id", 
         element: <ProductDetail/>, 
       }
     ],
