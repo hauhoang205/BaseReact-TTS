@@ -2,7 +2,7 @@ import React from 'react'
 
 const CategoryAdd = () => {
   return (
-    <div>CategoryAdd</div>
+    <div>CategoryAddd</div>
   )
 }
 
