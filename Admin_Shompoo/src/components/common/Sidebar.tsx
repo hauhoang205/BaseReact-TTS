@@ -55,30 +55,30 @@ const AdminSidebar = () => {
       switch(key)
       {
         case "addproduct":
-          navigate("/admin/product-add")
+          navigate("/product-add")
           break;
         case "productlist":
-          navigate("/admin/product-list") 
+          navigate("/product-list") 
           break;
 
         case "categorylist":
-          navigate("/admin/category-list")
+          navigate("/category-list")
           break;
         case "addcategory":
-          navigate("/admin/category-add")
+          navigate("/category-add")
           break;
 
         case "userlist":
-          navigate("/admin/user-list")
+          navigate("/user-list")
           break;
         case "adminList":
-          navigate("/admin/admin-list")
+          navigate("/admin-list")
           break;
         case "sub4": 
-          navigate("/admin/order-manage")
+          navigate("/order-manage")
           break;
         default:
-          navigate("/admin") 
+          navigate("") 
           break;
       }
   };

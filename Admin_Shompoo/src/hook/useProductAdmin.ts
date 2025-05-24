@@ -12,7 +12,8 @@ export const useProducts = () => {
     const fetchData = async () => {
       try {
         const result = await getAllProducts();
-        setData(result);
+              console.log("Fetched products result:", result);
+      setData(result ?? []);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError("Failed to fetch products");

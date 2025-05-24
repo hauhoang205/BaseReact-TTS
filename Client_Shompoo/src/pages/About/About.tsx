@@ -4,8 +4,6 @@ const About = () => {
   return (
     <div>About
     <Home />
-
-
     </div>
 
   )
