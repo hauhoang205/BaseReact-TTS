@@ -38,7 +38,7 @@ const Header = (props: Props) => {
 
   return (
     <div>
-      <div className="bg-white text-gray-700 text-[14px] leading-none select-none">
+      <div className=" bg-green-50 text-gray-700 text-[14px] leading-none select-none ">
         <div className="flex justify-between items-center px-6 sm:px-8 md:px-12 py-2 border-b border-gray-300">
           <div className="flex space-x-8">
             <div className="flex items-center space-x-2">
@@ -118,30 +118,30 @@ const Header = (props: Props) => {
             </form>
           </div>
 
-          <div className="flex items-center space-x-10 text-[14px] text-gray-700">
+          <div className="flex items-center space-x-10 text-[12px] text-gray-700 ">
             <Link to="/login" className="hover:text-gray-900">
               <div className="flex items-center space-x-2 cursor-pointer">
-                <i className="fas fa-user text-[18px]"></i>
+                <i className="fas fa-user text-[22px]"></i>
                 <div className="leading-none">
                   <div>Account</div>
-                  <div className="font-semibold text-[12px]">LOGIN</div>
+                 <div className="font-semibold text-[13px]" style={{ fontFamily: "'Poppins', sans-serif" }}>LOGIN</div>
                 </div>
               </div>
             </Link>
 
             <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
-              <i className="far fa-heart text-[18px]"></i>
+              <i className="fas fa-heart text-[22px]"></i>
               <div className="leading-none">
                 <div>Wishlist</div>
-                <div className="font-semibold text-[12px]">3-ITEMS</div>
+                <div className="font-semibold text-[13px]" style={{ fontFamily: "'Poppins', sans-serif" }}>3-ITEMS</div>
               </div>
             </div>
 
             <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
-              <i className="fas fa-shopping-bag text-[18px]"></i>
+              <i className="fas fa-shopping-bag text-[22px]"></i>
               <div className="leading-none">
                 <div>Cart</div>
-                <div className="font-semibold text-[12px]">3-ITEMS</div>
+                <div className="font-semibold text-[13px]" style={{ fontFamily: "'Poppins', sans-serif" }}>3-ITEMS</div>
               </div>
             </div>
           </div>
