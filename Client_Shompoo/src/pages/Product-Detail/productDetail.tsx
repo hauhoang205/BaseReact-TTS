@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import type { Product } from "types/product";
 import { getAllProducts } from "services/product/product.service";
@@ -11,7 +11,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-
+  const nav = useNavigate()
   // Lấy chi tiết sản phẩm
   useEffect(() => {
     const fetchProduct = async () => {
@@ -59,6 +59,10 @@ const ProductDetail = () => {
     }
   };
 
+    const handleAddToCart = () => {
+    
+    nav('/cart');
+  };
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -127,7 +131,7 @@ const ProductDetail = () => {
             <button onClick={handleIncrease} className="bg-gray-700 text-white px-3 py-1 rounded">
               +
             </button>
-            <button className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2 text-sm">
+            <button  onClick={handleAddToCart} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2 text-sm">
               Thêm vào giỏ hàng
             </button>
           </div>
@@ -136,7 +140,7 @@ const ProductDetail = () => {
 
       {/* Suggestion Products */}
       <h2 className="text-lg font-semibold mt-10 mb-4">Có thể bạn cũng thích</h2>
-      <div className="flex overflow-x-auto gap-4 p-3">
+      <div className="flex gap-4 p-3">
         {data?.map((item) => (
           <Link
             to={`/products/${item._id}`}
@@ -148,14 +152,19 @@ const ProductDetail = () => {
               alt={item.name}
               className="mb-3 w-full h-48 object-contain rounded"
             />
+<hr className="w-full border-t border-gray-300 mb-3" />
+
             <h3 className="font-semibold text-lg">{item.name}</h3>
             <div className="text-sm text-gray-500">{item.origin}</div>
-            <div className="mt-1 text-red-600 font-bold">
-              {item.discount_price.toLocaleString()}₫
-            </div>
-            <div className="text-gray-400 line-through text-sm">
-              {item.price.toLocaleString()}₫
-            </div>
+          <div className="flex gap-2 items-center mt-1">
+  <div className="text-red-600 font-bold">
+    {item.discount_price.toLocaleString()}₫
+  </div>
+  <div className="text-gray-400 line-through text-sm">
+    {item.price.toLocaleString()}₫
+  </div>
+</div>
+
           </Link>
         ))}
       </div>
