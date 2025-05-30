@@ -4,7 +4,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const getAllProducts = async (search?: string) => {
   try {
-    const url = `${API_URL}/products`;
+    const url = `${API_URL}/client/products`;
     const params = search ? { search } : {};
 
     const res = await axios.get(url, { params });

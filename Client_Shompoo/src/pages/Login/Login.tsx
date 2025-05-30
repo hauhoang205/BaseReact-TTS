@@ -38,7 +38,6 @@ const Login = () => {
     try {
       const res = await axios.post('http://localhost:8000/api/auth/login', formData); 
       setSuccess('Đăng nhập thành công!');
-      // Ví dụ lưu token hoặc thông tin người dùng
       localStorage.setItem('user', JSON.stringify(res.data.data));
       setTimeout(() => navigate('/'), 1500);
     } catch (err: any) {

@@ -16,7 +16,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/products/${id}`);
+        const res = await axios.get(`http://localhost:8000/api/client/products/${id}`);
         setProduct(res.data);
         setCurrentImage(res.data.images[0]); // ảnh chính mặc định
          setQuantity(1); // Đặt lại số lượng về 1 khi sản phẩm thay đổi

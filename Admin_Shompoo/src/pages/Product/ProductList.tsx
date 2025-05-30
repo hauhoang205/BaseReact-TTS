@@ -68,8 +68,7 @@ const ProductList = () => {
               ].map((header) => (
                 <th
                   key={header}
-                  className="border px-4 py-3 text-left text-gray-700 font-medium select-none"
-                >
+                  className="border px-4 py-3 text-left text-gray-700 font-medium select-none">
                   {header}
                 </th>
               ))}
