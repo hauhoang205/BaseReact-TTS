@@ -59,7 +59,7 @@ const Register = () => {
     setSuccess('');
   if (!validateForm()) return;
     try {
-      const res = await axios.post('http://localhost:8000/api/users', formData); 
+      const res = await axios.post('http://localhost:8000/api/client/users', formData); 
       setSuccess(res.data.message);
       setTimeout(() => {
         navigate('/login');

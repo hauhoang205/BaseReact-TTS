@@ -159,27 +159,22 @@ const Header = (props: Props) => {
           <nav className="flex gap-x-8 justify-between font-medium px-4">
             <Link to="/" className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
               <span>Home</span>
-              <i className="fas fa-chevron-down text-[12px]"></i>
             </Link>
 
             <button className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
               <span>Categories</span>
-              <i className="fas fa-chevron-down text-[12px]"></i>
             </button>
 
             <button className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
               <span>Products</span>
-              <i className="fas fa-chevron-down text-[12px]"></i>
             </button>
 
             <button className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
               <span>Blog</span>
-              <i className="fas fa-chevron-down text-[12px]"></i>
             </button>
 
             <button className="flex items-center space-x-2 hover:text-green-600 focus:outline-none">
               <span>Pages</span>
-              <i className="fas fa-chevron-down text-[12px]"></i>
             </button>
 
             <button className="hover:text-green-600 font-medium focus:outline-none">
