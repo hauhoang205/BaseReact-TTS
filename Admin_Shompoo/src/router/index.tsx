@@ -5,7 +5,7 @@ import CategoryList from "pages/Category/CategoryList";
 import Dasborad from "pages/Dashboard/Dasborad";
 import ProductList from "pages/Product";
 import UserList from "pages/Account/UserList";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import AdminList from "pages/Account/AdminList";
 import ProductEdit from "pages/Product/ProductEdit";
 import ProductAdd from "pages/Product/ProductAdd";
@@ -13,11 +13,25 @@ import ProductDelete from "pages/Product/ProductDelete";
 import CategoryInProduct from "pages/Category/CategoryInProduct";
 import CategoryEdit from "pages/Category/CategoryEdit";
 import CategoryDelete from "pages/Category/CategoryDelete";
+import Login from "pages/Login/Login";
+import PrivateRoute from "components/auth/PrivateRoute";
 
 export const router = createBrowserRouter([
+    {
+    path: "/",
+    element: <Navigate to="/admin" replace />, 
+  },
+     {
+        path: "admin-login",
+        element: <Login />,
+      },
   {
-    path: "",
-    element: <AdminLayout />, 
+    path: "/admin",
+     element: (
+      <PrivateRoute>
+        <AdminLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,         
@@ -67,6 +81,8 @@ export const router = createBrowserRouter([
         path: "admin-list",
         element: <AdminList />,
       },
+       
     ],
   },
+
 ]);

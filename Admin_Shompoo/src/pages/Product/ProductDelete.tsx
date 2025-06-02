@@ -60,7 +60,7 @@ const ProductDelete = () => {
         </h2>
       </div>
  <div className="mb-6 flex justify-end">
-  <Link  to={"/product-list"}
+  <Link  to={"/admin/product-list"}
     className="px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 shadow transition"
   >
     Xem sản phẩm

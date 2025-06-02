@@ -62,7 +62,7 @@ const productData: Partial<Product> = {
   try {
     await updateProduct(params.id as string, productData);
     alert("Cập nhật thành công");
-    nav("/product-list");
+    nav("/admin/product-list");
   } catch (error: any) {
     alert("Lỗi khi cập nhật sản phẩm: " + (error.message || error));
     console.error(error);

@@ -46,7 +46,7 @@ const ProductList = () => {
         </h2>
       </div>
  <div className="mb-6 flex justify-end">
-  <Link  to={"/product-delete"}
+  <Link  to={"/admin/product-delete"}
     className="px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 shadow transition"
   >
     Xem sản phẩm đã xóa
@@ -122,7 +122,7 @@ const ProductList = () => {
                  <td className="border px-4 py-2 align-middle">
   <div className="flex gap-3">
     <Link
-      to={`/product-edit/${item._id}`}
+      to={`/admin/product-edit/${item._id}`}
       className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 transition font-semibold"
     >
       Sửa

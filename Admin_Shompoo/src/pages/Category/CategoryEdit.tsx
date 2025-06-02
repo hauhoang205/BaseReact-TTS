@@ -37,7 +37,7 @@ const CategoryEdit = () => {
     try {
       await updateCategory(id, data);
       alert("Cập nhật danh mục thành công!");
-      navigate("/category-list");
+      navigate("/admin/category-list");
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message || error.message || "Đã xảy ra lỗi";

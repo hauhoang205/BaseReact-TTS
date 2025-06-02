@@ -40,7 +40,7 @@ const ProductAdd = () => {
     try {
       await createProduct(productData);
       alert("Thêm mới thành công");
-      nav("/product-list");
+      nav("/admin/product-list");
     } catch (error: any) {
       alert("Lỗi khi thêm sản phẩm: " + (error.message || error));
       console.error(error);
