@@ -15,7 +15,7 @@ const CategoryAdd = () => {
   try {
     await createCategory(data);
     alert("Thêm danh mục thành công!");
-    nav("/category-list");
+    nav("/admin/category-list");
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || error.message || "Đã xảy ra lỗi";
     alert("Lỗi khi thêm danh mục: " + errorMessage);

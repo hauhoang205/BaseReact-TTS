@@ -1,5 +1,5 @@
-import axios from "axios";
 import type { Product } from "types/product";
+import axiosClient from "utils/axiosInstance";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -12,7 +12,7 @@ interface GetAllProductsParams {
 
 export const getAllProducts = async (params?: GetAllProductsParams) => {
   try {
-    const res = await axios.get(`${API_URL}/products`, { params });
+    const res = await axiosClient.get(`${API_URL}/admin/products`, { params });
     return res.data;
   } catch (error) {
     throw error;
@@ -21,7 +21,7 @@ export const getAllProducts = async (params?: GetAllProductsParams) => {
 
 export const createProduct = async (productData: any) => {
   try {
-    const res = await axios.post(`${API_URL}/products`, productData);
+    const res = await axiosClient.post(`${API_URL}/admin/products`, productData);
     return res.data; 
   } catch (error: any) {
 
@@ -34,7 +34,7 @@ export const createProduct = async (productData: any) => {
 
 export const deleteProductById = async(id: string)=>{
   try {
-     const res = await axios.delete(`${API_URL}/products/${id}`);
+     const res = await axiosClient.delete(`${API_URL}/admin/products/${id}`);
      return res.data
   } catch (error) {
     console.log(error);
@@ -44,7 +44,7 @@ export const deleteProductById = async(id: string)=>{
 
 export const getProductById = async(id:string)=>{
   try {
-     const res = await axios.get(`${API_URL}/products/${id}`);
+     const res = await axiosClient.get(`${API_URL}/admin/products/${id}`);
      return res.data
   } catch (error) {
     console.log(error);
@@ -54,7 +54,7 @@ export const getProductById = async(id:string)=>{
 
 export const updateProduct = async (id: string, data: Partial<Product>) => {
   try {
-    const res = await axios.put(`${API_URL}/products/${id}`, data);
+    const res = await axiosClient.put(`${API_URL}/admin/products/${id}`, data);
     return res.data;
   } catch (error) {
     console.log(error);
@@ -63,7 +63,7 @@ export const updateProduct = async (id: string, data: Partial<Product>) => {
 
 export const getDeletedProducts = async (page = 1, limit = 5) => {
   try {
-    const res = await axios.get(`${API_URL}/products/deleted`, {
+    const res = await axiosClient.get(`${API_URL}/admin/products/deleted`, {
       params: { page, limit },
     });
     return res.data; // Trả về { data, pagination }
@@ -75,7 +75,7 @@ export const getDeletedProducts = async (page = 1, limit = 5) => {
 
 export const forceDeleteProduct = async (id: string) => {
   try {
-    const res = await axios.delete(`${API_URL}/products/forcedelete/${id}`);
+    const res = await axiosClient.delete(`${API_URL}/admin/products/forcedelete/${id}`);
     return res.data;
   } catch (error) {
     console.error("Lỗi khi xóa vĩnh viễn sản phẩm:", error);
@@ -86,7 +86,7 @@ export const forceDeleteProduct = async (id: string) => {
 // Khôi phục sản phẩm đã xóa mềm theo id
 export const restoreProduct = async (id: string) => {
   try {
-    const res = await axios.patch(`${API_URL}/products/restore/${id}`);
+    const res = await axiosClient.patch(`${API_URL}/admin/products/restore/${id}`);
     return res.data;
   } catch (error) {
     console.error("Lỗi khi khôi phục sản phẩm:", error);

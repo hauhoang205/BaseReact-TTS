@@ -53,7 +53,7 @@ const CategoryList = () => {
         </h2>
       </div>
  <div className="mb-6 flex justify-end">
-  <Link  to={"/category-delete"}
+  <Link  to={"/admin/category-delete"}
     className="px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 shadow transition"
   >
     Xem danh mục đã xóa
@@ -97,14 +97,14 @@ const CategoryList = () => {
                     <div className="flex gap-3">
                       <Button
                         className="bg-red-600 hover:bg-blue-700 text-white font-semibold"
-                        onClick={() => nav(`/category-in-product/${item._id}`)}
+                        onClick={() => nav(`/admin/category-in-product/${item._id}`)}
                       >
                         Chi tiết
                       </Button>
                       <Button 
                         type="primary"
                         className="bg-blue-600 hover:bg-blue-700 font-semibold"
-                       onClick={() => nav(`/category-edit/${item._id}`)}
+                       onClick={() => nav(`/admin/category-edit/${item._id}`)}
                       >
                         Sửa
                       </Button>

@@ -62,7 +62,7 @@ const fetchDeletedCategories = async (pageNumber = page) => {
 
       <div className="mb-6 flex justify-end">
         <Link
-          to={"/category-list"}
+          to={"/admin/category-list"}
           className="px-4 py-2 rounded-lg bg-red-100 text-red-700 hover:bg-red-200 border border-red-300 shadow transition"
         >
           Xem danh mục

@@ -33,7 +33,7 @@ const CategoryInProduct = () => {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Sản phẩm thuộc danh mục</h1>
         <button
-          onClick={() => navigate("/category-list")}
+          onClick={() => navigate("/admin/category-list")}
           className="px-4 py-2 bg-blue-200 text-white rounded hover:bg-gray-800 transition"
         >
           Quay về danh mục
