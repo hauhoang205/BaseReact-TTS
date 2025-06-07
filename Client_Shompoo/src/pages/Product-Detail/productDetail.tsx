@@ -17,8 +17,9 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(`http://localhost:8000/api/client/products/${id}`);
-        setProduct(res.data);
-        setCurrentImage(res.data.images[0]); // ảnh chính mặc định
+        setProduct(res.data.data);
+        
+        setCurrentImage(res.data.data.images[0]); // ảnh chính mặc định
          setQuantity(1); // Đặt lại số lượng về 1 khi sản phẩm thay đổi
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết sản phẩm:", error);

@@ -13,53 +13,48 @@ const Header = (props: Props) => {
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-  const categoryBtnRef = useRef<HTMLButtonElement>(null);
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Xử lý click ra ngoài dropdown tìm kiếm
+  // Click ngoài dropdown tìm kiếm
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setShowDropdown(false);
-        setQuery('');
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [setQuery]);
+  }, []);
 
-  // Fetch danh mục khi dropdown mở và chưa có dữ liệu
+  // Fetch danh mục khi mở dropdown
   useEffect(() => {
     if (showCategoryDropdown && categories.length === 0) {
       fetch('http://localhost:8000/api/client/categories')
-        .then(res => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            throw new Error(`Unexpected status: ${res.status}`);
-          }
+        .then((res) => {
+          if (res.status === 200) return res.json();
+          throw new Error(`Unexpected status: ${res.status}`);
         })
-        .then(resData => {
+        .then((resData) => {
           const categoryArray = resData?.data?.data;
           if (Array.isArray(categoryArray)) {
             setCategories(categoryArray);
           } else {
-            console.warn('Không tìm thấy danh sách danh mục trong phản hồi:', resData);
             setCategories([]);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error('Lỗi khi gọi API categories:', err);
           setCategories([]);
         });
     }
   }, [showCategoryDropdown, categories.length]);
 
-  // Đóng dropdown danh mục khi click ra ngoài
+  // Click ngoài dropdown danh mục
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (
-        categoryBtnRef.current &&
-        !categoryBtnRef.current.contains(event.target as Node)
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target as Node)
       ) {
         setShowCategoryDropdown(false);
       }
@@ -87,7 +82,7 @@ const Header = (props: Props) => {
 
   return (
     <div className="bg-green-50 text-gray-700 text-[14px] leading-none select-none">
-      {/* Top header */}
+      {/* Top Header */}
       <div className="flex justify-between items-center px-6 sm:px-8 md:px-12 py-2 border-b border-gray-300">
         <div className="flex space-x-8">
           <div className="flex items-center space-x-2">
@@ -167,7 +162,7 @@ const Header = (props: Props) => {
           </form>
         </div>
 
-        {/* Account */}
+        {/* Account/Wishlist/Cart */}
         <div className="flex items-center space-x-10 text-[12px] text-gray-700">
           <Link to="/login" className="hover:text-gray-900">
             <div className="flex items-center space-x-2 cursor-pointer">
@@ -197,12 +192,11 @@ const Header = (props: Props) => {
         </div>
       </div>
 
-      {/* Bottom nav */}
+      {/* Bottom Nav */}
       <div className="flex items-center justify-between px-6 sm:px-8 md:px-12 py-4 border-b border-gray-300 text-[14px] text-gray-700 select-none">
         {/* All Categories */}
-        <div className="relative">
+        <div className="relative" ref={categoryDropdownRef}>
           <button
-            ref={categoryBtnRef}
             aria-label="All Categories"
             className="flex items-center space-x-3 bg-green-600 text-white rounded-md px-4 py-2 font-medium hover:bg-green-700"
             onClick={() => setShowCategoryDropdown((prev) => !prev)}
@@ -216,31 +210,29 @@ const Header = (props: Props) => {
               {categories.length === 0 ? (
                 <div className="p-3 text-gray-500 text-center">Loading...</div>
               ) : (
-                categories 
-                .filter((cat) => cat.name !== 'Danh mục mặc định')
+                categories
+                  .filter((cat) => cat.name !== 'Danh mục mặc định')
                   .map((cat) => (
-                  <div
-                    key={cat._id}
-                    className="px-4 py-2 hover:bg-green-50 cursor-pointer"
-                    onClick={() => {
-                      setShowCategoryDropdown(false);
-                      nav(`/products/by-category/${cat._id}`);
-                    }}
-                  >
-                    {cat.name}
-                  </div>
-                ))
+                    <button
+                      type="button"
+                      key={cat._id}
+                      onClick={() => {
+                        nav(`/category/${cat._id}`);
+                        setShowCategoryDropdown(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 hover:bg-green-50 text-gray-700 cursor-pointer"
+                    >
+                      {cat.name}
+                    </button>
+                  ))
               )}
             </div>
           )}
         </div>
 
-        {/* Navigation Links */}
+        {/* Navigation */}
         <nav className="flex gap-x-8 justify-between font-medium px-4">
-          <Link to="/" className="flex items-center space-x-2 hover:text-green-600">
-            <span>Home</span>
-          </Link>
-          <button className="hover:text-green-600">Categories</button>
+          <Link to="/" className="hover:text-green-600">Home</Link>
           <button className="hover:text-green-600">Products</button>
           <button className="hover:text-green-600">Blog</button>
           <button className="hover:text-green-600">Pages</button>
@@ -248,14 +240,16 @@ const Header = (props: Props) => {
         </nav>
 
         {/* Location */}
-        <button
-          aria-label="New York location"
-          className="flex items-center space-x-3 bg-green-600 text-white rounded-md px-4 py-2 font-medium hover:bg-green-700"
-        >
-          <i className="fas fa-map-marker-alt text-[16px]"></i>
-          <span>New York</span>
-          <i className="fas fa-chevron-down text-[12px]"></i>
-        </button>
+        <div>
+          <button
+            aria-label="New York location"
+            className="flex items-center space-x-3 bg-green-600 text-white rounded-md px-4 py-2 font-medium hover:bg-green-700"
+          >
+            <i className="fas fa-map-marker-alt text-[16px]"></i>
+            <span>New York</span>
+            <i className="fas fa-chevron-down text-[12px]"></i>
+          </button>
+        </div>
       </div>
     </div>
   );

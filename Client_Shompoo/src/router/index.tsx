@@ -4,6 +4,7 @@ import Cart from "pages/Cart/Cart";
 import Home from "pages/Home";
 import Login from "pages/Login/Login";
 import ProductDetail from "pages/Product-Detail/productDetail";
+import ProductInCategory from "pages/ProductInCategory/productInCategory";
 import Register from "pages/Register/Register";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "/products/:id", 
         element: <ProductDetail/>, 
+      },
+       {
+        path: "/category/:categoryId", 
+        element: <ProductInCategory/>, 
       },
       {
         path: "/cart",

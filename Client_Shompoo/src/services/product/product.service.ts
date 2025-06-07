@@ -8,7 +8,7 @@ export const getAllProducts = async (search?: string) => {
     const params = search ? { search } : {};
 
     const res = await axios.get(url, { params });
- return res.data.products;
+ return res.data.data.products;
   } catch (error) {
     // Ném lỗi để gọi hàm bên ngoài có thể xử lý
     throw error;
