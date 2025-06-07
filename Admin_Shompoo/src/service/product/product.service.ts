@@ -13,7 +13,7 @@ interface GetAllProductsParams {
 export const getAllProducts = async (params?: GetAllProductsParams) => {
   try {
     const res = await axiosClient.get(`${API_URL}/admin/products`, { params });
-    return res.data;
+    return res.data.data;
   } catch (error) {
     throw error;
   }
@@ -45,7 +45,7 @@ export const deleteProductById = async(id: string)=>{
 export const getProductById = async(id:string)=>{
   try {
      const res = await axiosClient.get(`${API_URL}/admin/products/${id}`);
-     return res.data
+     return res.data.data
   } catch (error) {
     console.log(error);
     
@@ -66,7 +66,7 @@ export const getDeletedProducts = async (page = 1, limit = 5) => {
     const res = await axiosClient.get(`${API_URL}/admin/products/deleted`, {
       params: { page, limit },
     });
-    return res.data; // Trả về { data, pagination }
+    return res.data.data; // Trả về { data, pagination }
   } catch (error) {
     console.error("Lỗi khi lấy sản phẩm đã xóa mềm:", error);
     throw error;
