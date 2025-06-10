@@ -28,23 +28,28 @@ const Login = () => {
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    if (!validateForm()) return;
-
-    try {
-      const res = await axios.post('http://localhost:8000/api/auth/login', formData); 
-      setSuccess('Đăng nhập thành công!');
-      localStorage.setItem('user', JSON.stringify(res.data.data));
-      setTimeout(() => navigate('/'), 1500);
-    } catch (err: any) {
-      const msg = err.response?.data?.message || 'Đăng nhập thất bại';
-      setError(msg);
-    }
-  };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError('');
+  setSuccess('');
+  if (!validateForm()) return;
+  setLoading(true);
+  try {
+    const res = await axios.post('http://localhost:8000/api/auth/login', formData);
+    console.log('Login response:', res.data);
+    const { user, accessToken } = res.data.data;
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', accessToken);
+    setSuccess('Đăng nhập thành công!');
+    setTimeout(() => navigate('/'), 1500);
+  } catch (err: any) {
+    const msg = err.response?.data?.message || 'Đăng nhập thất bại';
+    setError(msg);
+  } finally {
+    setLoading(false);
+  }
+};
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="bg-gray-100 flex items-center justify-center min-h-screen">

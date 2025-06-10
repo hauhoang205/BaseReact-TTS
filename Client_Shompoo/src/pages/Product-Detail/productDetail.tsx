@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import type { Product } from "types/product";
@@ -60,10 +60,30 @@ const ProductDetail = () => {
     }
   };
 
-    const handleAddToCart = () => {
-    
+
+
+  const handleAddToCart = async () => {
+  try {
+    const token = localStorage.getItem("token"); // Lấy token từ localStorage
+    if (!token) {
+      alert("Bạn cần đăng nhập để thêm vào giỏ hàng");
+      return;
+    }
+    await axios.post("http://localhost:8000/api/client/carts", {
+      product_id: product?._id,
+      quantity: quantity
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    alert("Đã thêm vào giỏ hàng");
     nav('/cart');
-  };
+  } catch (error) {
+    alert("Thêm vào giỏ hàng thất bại");
+  }
+};
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
