@@ -181,14 +181,17 @@ const Header = (props: Props) => {
               <div className="font-semibold text-[13px]">3-ITEMS</div>
             </div>
           </div>
-
+    <Link to="/cart">
           <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
             <i className="fas fa-shopping-bag text-[22px]"></i>
-            <div className="leading-none">
+           
+              <div className="leading-none">
               <div>Cart</div>
-              <div className="font-semibold text-[13px]">3-ITEMS</div>
             </div>
+         
+          
           </div>
+             </Link>
         </div>
       </div>
 

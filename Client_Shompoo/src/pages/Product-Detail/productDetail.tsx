@@ -2,36 +2,47 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import type { Product } from "types/product";
+import type { IProductVariant } from "types/variant";
 import { getAllProducts } from "services/product/product.service";
+import { getVariantById } from "services/variant/variant.service";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
+  const [variants, setVariants] = useState<IProductVariant[]>([]);
+  const [selectedVariant, setSelectedVariant] = useState<IProductVariant | null>(null);
   const [data, setData] = useState<Product[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-  const nav = useNavigate()
-  // Lấy chi tiết sản phẩm
+  const nav = useNavigate();
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await axios.get(`http://localhost:8000/api/client/products/${id}`);
-        setProduct(res.data.data);
-        
-        setCurrentImage(res.data.data.images[0]); // ảnh chính mặc định
-         setQuantity(1); // Đặt lại số lượng về 1 khi sản phẩm thay đổi
+        const productData = res.data.data;
+        setProduct(productData);
+
+        const variantRes = await getVariantById(productData._id);
+        setVariants(variantRes);
+     if (variantRes.length > 0) {
+  setSelectedVariant(variantRes[0]);
+  setCurrentImage(variantRes[0].image || variantRes[0].images?.[0] || "");
+} else {
+  setSelectedVariant(null);
+  setCurrentImage(res.data.data.images?.[0] || "");
+}
+        setQuantity(1);
       } catch (error) {
         console.error("Lỗi khi lấy chi tiết sản phẩm:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [id]);
 
-  // Lấy 4 sản phẩm liên quan
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -41,15 +52,14 @@ const ProductDetail = () => {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
   }, []);
 
   if (loading) return <p>Đang tải dữ liệu...</p>;
-  if (!product) return <p>Không tìm thấy sản phẩm</p>;
+  if (!product || !selectedVariant) return <p>Không tìm thấy sản phẩm</p>;
 
   const handleIncrease = () => {
-    if (quantity < product.stock_quantity) {
+    if (quantity < selectedVariant.stock_quantity) {
       setQuantity((prev) => prev + 1);
     }
   };
@@ -60,34 +70,30 @@ const ProductDetail = () => {
     }
   };
 
-
-
   const handleAddToCart = async () => {
-  try {
-    const token = localStorage.getItem("token"); // Lấy token từ localStorage
-    if (!token) {
-      alert("Bạn cần đăng nhập để thêm vào giỏ hàng");
-      return;
-    }
-    await axios.post("http://localhost:8000/api/client/carts", {
-      product_id: product?._id,
-      quantity: quantity
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Bạn cần đăng nhập để thêm vào giỏ hàng");
+        return;
       }
-    });
+      await axios.post("http://localhost:8000/api/client/carts", {
+        product_id: product._id,
+        variant_id: selectedVariant._id,
+        quantity,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Đã thêm vào giỏ hàng");
+      nav('/cart');
+    } catch (error) {
+      alert("Thêm vào giỏ hàng thất bại");
+    }
+  };
 
-    alert("Đã thêm vào giỏ hàng");
-    nav('/cart');
-  } catch (error) {
-    alert("Thêm vào giỏ hàng thất bại");
-  }
-};
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left: Image */}
         <div className="lg:w-1/2">
           <div className="border border-gray-200 rounded-md p-4">
             <img
@@ -96,9 +102,9 @@ const ProductDetail = () => {
               className="w-full h-auto object-contain rounded-md"
             />
           </div>
-          {product.images.length > 1 && (
+          {selectedVariant.images && selectedVariant.images.length > 1 && (
             <div className="flex gap-4 mt-4">
-              {product.images.map((img, idx) => (
+              {selectedVariant.images.map((img, idx) => (
                 <button
                   key={idx}
                   className={`border rounded-md p-1 w-16 h-16 flex items-center justify-center ${
@@ -113,53 +119,66 @@ const ProductDetail = () => {
           )}
         </div>
 
-        {/* Right: Details */}
         <div className="lg:w-1/2 flex flex-col">
           <h1 className="text-gray-800 text-lg font-medium mb-2">{product.name}</h1>
+
+        
+
           <div className="flex items-center gap-4 mb-4">
             <div className="text-2xl font-bold text-gray-900">
-              {product.discount_price.toLocaleString()}₫
+              {selectedVariant.discount_price?.toLocaleString()}₫
             </div>
-            <div className="text-green-700 font-semibold text-base">
-              -{Math.round(((product.price - product.discount_price) / product.price) * 100)}%
-            </div>
+            {selectedVariant.discount_price && (
+              <div className="text-green-700 font-semibold text-base">
+                -{Math.round(((selectedVariant.price - selectedVariant.discount_price) / selectedVariant.price) * 100)}%
+              </div>
+            )}
             <div className="text-gray-400 line-through text-base">
-              {product.price.toLocaleString()}₫
-            </div>
-            <div className="ml-auto text-sm font-semibold text-gray-700">
-              Mã SP: <span className="font-normal">{product._id}</span>
+              {selectedVariant.price.toLocaleString()}₫
             </div>
           </div>
 
-          <div className="text-green-600 font-semibold text-sm mb-4">
-            {product.stock_quantity > 0 ? "Còn hàng" : "Hết hàng"}
+  <div className="flex gap-2 mb-2">
+            {variants.map((v) => (
+              <button
+                key={v._id}
+                onClick={() => {
+                  setSelectedVariant(v);
+                  setCurrentImage(v.image || v.images?.[0] || "");
+                  setQuantity(1);
+                }}
+                className={`px-3 py-1 rounded border text-sm ${selectedVariant._id === v._id ? 'bg-green-600 text-white' : 'bg-white text-black'}`}
+              >
+                {v.size || v.fragrance || 'Chọn'}
+              </button>
+            ))}
           </div>
+        <div className={`font-semibold text-sm mb-4 ${selectedVariant.stock_quantity > 0 ? "text-green-600" : "text-red-500"}`}>
+  {selectedVariant.stock_quantity > 0 
+    ? `Còn hàng (${selectedVariant.stock_quantity} sản phẩm)` 
+    : "Hết hàng"}
+</div>
 
           <p className="text-sm text-gray-500 mb-6 leading-relaxed">{product.description}</p>
 
           <ul className="text-sm text-gray-600 mb-6 space-y-1 list-disc list-inside">
-            <li><span className="font-semibold">Dung tích:</span> {product.size}</li>
-            <li><span className="font-semibold">Hương thơm:</span> {product.fragrance}</li>
-            <li><span className="font-semibold">Loại tóc phù hợp:</span> {product.hair_type}</li>
+            <li><span className="font-semibold">Dung tích:</span> {selectedVariant.size}</li>
+            <li><span className="font-semibold">Hương thơm:</span> {selectedVariant.fragrance}</li>
+            <li><span className="font-semibold">Loại tóc phù hợp:</span> {selectedVariant.hair_type}</li>
             <li><span className="font-semibold">Xuất xứ:</span> {product.origin}</li>
           </ul>
 
           <div className="flex items-center gap-2">
-            <button onClick={handleDecrease} className="bg-gray-700 text-white px-3 py-1 rounded">
-              -
-            </button>
+            <button onClick={handleDecrease} className="bg-gray-700 text-white px-3 py-1 rounded">-</button>
             <div className="border px-4 py-1 rounded text-sm">{quantity}</div>
-            <button onClick={handleIncrease} className="bg-gray-700 text-white px-3 py-1 rounded">
-              +
-            </button>
-            <button  onClick={handleAddToCart} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2 text-sm">
+            <button onClick={handleIncrease} className="bg-gray-700 text-white px-3 py-1 rounded">+</button>
+            <button onClick={handleAddToCart} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2 text-sm">
               Thêm vào giỏ hàng
             </button>
           </div>
         </div>
       </div>
 
-      {/* Suggestion Products */}
       <h2 className="text-lg font-semibold mt-10 mb-4">Có thể bạn cũng thích</h2>
       <div className="flex gap-4 p-3">
         {data?.map((item) => (
@@ -173,19 +192,13 @@ const ProductDetail = () => {
               alt={item.name}
               className="mb-3 w-full h-48 object-contain rounded"
             />
-<hr className="w-full border-t border-gray-300 mb-3" />
-
+            <hr className="w-full border-t border-gray-300 mb-3" />
             <h3 className="font-semibold text-lg">{item.name}</h3>
             <div className="text-sm text-gray-500">{item.origin}</div>
-          <div className="flex gap-2 items-center mt-1">
-  <div className="text-red-600 font-bold">
-    {item.discount_price.toLocaleString()}₫
-  </div>
-  <div className="text-gray-400 line-through text-sm">
-    {item.price.toLocaleString()}₫
-  </div>
-</div>
-
+            <div className="flex gap-2 items-center mt-1">
+              <div className="text-red-600 font-bold">{item.discount_price.toLocaleString()}₫</div>
+              <div className="text-gray-400 line-through text-sm">{item.price.toLocaleString()}₫</div>
+            </div>
           </Link>
         ))}
       </div>

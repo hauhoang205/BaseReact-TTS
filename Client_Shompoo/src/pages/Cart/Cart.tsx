@@ -1,14 +1,16 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from 'hooks/useCart';
 import { useProducts } from 'hooks/useProduct';
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 const Cart = () => {
   const { data: cart, isLoading } = useCart();
   const { data: products, loading } = useProducts();
   const queryClient = useQueryClient();
+const navigate = useNavigate();
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -65,6 +67,38 @@ const Cart = () => {
     }
   };
 
+const handleCheckout = () => {
+  const token = localStorage.getItem("token");
+  const userString = localStorage.getItem("user");
+
+  if (!token || !userString) {
+    toast.error("Vui lòng đăng nhập để thanh toán!", { icon: "⚠️" });
+    setTimeout(() => navigate("/login"), 3000);
+    return;
+  }
+
+  const userData = JSON.parse(userString); // vẫn dùng tạm để lấy userId
+
+  if (!cart || !cart.items || cart.items.length === 0) {
+    alert("Giỏ hàng trống");
+    return;
+  }
+
+  const selectedItems = cart.items.map((item) => ({
+    product_id: item.product_id,
+    variant_id: item.variant_id || null,
+    quantity: item.quantity,
+  }));
+
+  navigate("/checkout", {
+    state: {
+      selectedItems,
+      isFromCart: true,
+    },
+  });
+};
+
+
   return (
     <div className="bg-white text-gray-700 font-sans">
       <div className="max-w-6xl mx-auto p-6">
@@ -112,9 +146,18 @@ const Cart = () => {
                         src={item.product_id.images?.[0] || "https://via.placeholder.com/40"}
                         width={40}
                       />
-                      <span>{item.product_id.name}</span>
+                      <div>
+  <div className="font-semibold">{item.product_id.name}</div>
+  {item.variant_id?.size && (
+    <div className="text-gray-500 text-xs">Dung tích: {item.variant_id.size}</div>
+  )}
+  {item.variant_id?.fragrance && (
+    <div className="text-gray-500 text-xs">Hương: {item.variant_id.fragrance}</div>
+  )}
+</div>
+
                     </td>
-                    <td className="text-center">{item.product_id.discount_price.toLocaleString()}₫</td>
+                    <td className="text-center">{item.variant_id.discount_price.toLocaleString()}₫</td>
                     <td className="text-center">
                       <div className="inline-flex border border-gray-200 rounded-md overflow-hidden">
                         <button
@@ -157,9 +200,12 @@ const Cart = () => {
               >
                 Continue Shopping
               </Link>
-              <button className="bg-green-400 text-white text-xs px-4 py-1 rounded-md hover:bg-green-500">
-                Check Out
-              </button>
+          <button
+  onClick={handleCheckout}
+  className="bg-green-400 text-white text-xs px-4 py-1 rounded-md hover:bg-green-500"
+>
+  Check Out
+</button>
             </div>
           </div>
         </div>
