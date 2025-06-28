@@ -38,7 +38,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     const res = await axios.post('http://localhost:8000/api/auth/login', formData);
     console.log('Login response:', res.data);
     const { user, accessToken } = res.data.data;
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('userInfo', JSON.stringify(user));
     localStorage.setItem('token', accessToken);
     setSuccess('Đăng nhập thành công!');
     setTimeout(() => navigate('/'), 1500);

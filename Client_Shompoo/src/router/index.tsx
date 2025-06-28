@@ -1,6 +1,9 @@
 import MainLayout from "components/layout/MainLayout";
 import About from "pages/About/About";
 import Cart from "pages/Cart/Cart";
+import CheckOutPage from "pages/Check-Out/checkout.page";
+import OrderPage from "pages/Order/Order.page";
+import ProductPage from "pages/Products/Product.page";
 import Home from "pages/Home";
 import Login from "pages/Login/Login";
 import ProductDetail from "pages/Product-Detail/productDetail";
@@ -31,6 +34,10 @@ export const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "/products", 
+        element: <ProductPage/>, 
+      },
+      {
         path: "/products/:id", 
         element: <ProductDetail/>, 
       },
@@ -41,6 +48,14 @@ export const router = createBrowserRouter([
       {
         path: "/cart",
         element: <Cart/>
+      },
+         {
+        path: "/check-out",
+        element: <CheckOutPage />
+      },
+      {
+        path: "/orders",
+        element: <OrderPage />
       }
     ],
   },

@@ -1,4 +1,6 @@
 import { useSearchProducts } from 'hooks/useSearch';
+import { useAuthSimple, useLogoutSimple } from 'hooks/useAuthSimple';
+import { useCart } from 'hooks/useCart';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -8,12 +10,25 @@ type Category = { _id: string; name: string };
 
 const Header = (props: Props) => {
   const { data, loading, error, query, setQuery } = useSearchProducts();
+  const { user: authData, isLoggedIn: isLoggedInSimple } = useAuthSimple();
+  const { data: cartData } = useCart();
+  const logout = useLogoutSimple();
   const nav = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+  
+  // Debug: kiểm tra authData
+  console.log('authData trong Header:', authData);
+  console.log('token trong localStorage:', localStorage.getItem('token'));
+  console.log('userInfo trong localStorage:', localStorage.getItem('userInfo'));
+  
+  const isLoggedIn = isLoggedInSimple;
+  const cartCount = cartData?.items?.reduce((total: number, item: any) => total + item.quantity, 0) || 0;
 
   // Click ngoài dropdown tìm kiếm
   useEffect(() => {
@@ -64,6 +79,22 @@ const Header = (props: Props) => {
     }
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showCategoryDropdown]);
+
+  // Click ngoài dropdown user
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowUserDropdown(false);
+      }
+    }
+    if (showUserDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showUserDropdown]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,31 +195,78 @@ const Header = (props: Props) => {
 
         {/* Account/Wishlist/Cart */}
         <div className="flex items-center space-x-10 text-[12px] text-gray-700">
-          <Link to="/login" className="hover:text-gray-900">
-            <div className="flex items-center space-x-2 cursor-pointer">
-              <i className="fas fa-user text-[22px]"></i>
-              <div className="leading-none">
-                <div>Account</div>
-                <div className="font-semibold text-[13px]">LOGIN</div>
+          {isLoggedIn ? (
+            <div className="relative" ref={userDropdownRef}>
+              <div 
+                className="flex items-center space-x-2 cursor-pointer hover:text-gray-900"
+                onClick={() => setShowUserDropdown(!showUserDropdown)}
+              >
+                <i className="fas fa-user text-[22px]"></i>
+                <div className="leading-none">
+                  <div>Xin chào</div>
+                  <div className="font-semibold text-[13px]">{authData?.name || authData?.fullname || 'User'}</div>
+                </div>
+                <i className="fas fa-chevron-down text-[10px]"></i>
               </div>
+              {showUserDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-50">
+                  <button
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700"
+                    onClick={() => {
+                      nav('/orders');
+                      setShowUserDropdown(false);
+                    }}
+                  >
+                    Đơn hàng của tôi
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700"
+                    onClick={() => {
+                      nav('/profile');
+                      setShowUserDropdown(false);
+                    }}
+                  >
+                    Thông tin cá nhân
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700"
+                    onClick={() => {
+                      logout();
+                      setShowUserDropdown(false);
+                    }}
+                  >
+                    Đăng xuất
+                  </button>
+                </div>
+              )}
             </div>
-          </Link>
+          ) : (
+            <Link to="/login" className="hover:text-gray-900">
+              <div className="flex items-center space-x-2 cursor-pointer">
+                <i className="fas fa-user text-[22px]"></i>
+                <div className="leading-none">
+                  <div>Account</div>
+                  <div className="font-semibold text-[13px]">LOGIN</div>
+                </div>
+              </div>
+            </Link>
+          )}
 
           <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
             <i className="fas fa-heart text-[22px]"></i>
             <div className="leading-none">
               <div>Wishlist</div>
-              <div className="font-semibold text-[13px]">3-ITEMS</div>
+              <div className="font-semibold text-[13px]">0-ITEMS</div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
+          <Link to="/cart" className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
             <i className="fas fa-shopping-bag text-[22px]"></i>
             <div className="leading-none">
               <div>Cart</div>
-              <div className="font-semibold text-[13px]">3-ITEMS</div>
+              <div className="font-semibold text-[13px]">{cartCount}-ITEMS</div>
             </div>
-          </div>
+          </Link>
         </div>
       </div>
 
@@ -233,7 +311,7 @@ const Header = (props: Props) => {
         {/* Navigation */}
         <nav className="flex gap-x-8 justify-between font-medium px-4">
           <Link to="/" className="hover:text-green-600">Home</Link>
-          <button className="hover:text-green-600">Products</button>
+          <Link to="/products" className="hover:text-green-600">Products</Link>
           <button className="hover:text-green-600">Blog</button>
           <button className="hover:text-green-600">Pages</button>
           <button className="hover:text-green-600 font-medium">Offers</button>

@@ -1,14 +1,17 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from 'hooks/useCart';
 import { useProducts } from 'hooks/useProduct';
+import { useUser } from 'hooks/useUser';
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Cart = () => {
   const { data: cart, isLoading } = useCart();
   const { data: products, loading } = useProducts();
+  const { data: user } = useUser();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -63,6 +66,51 @@ const Cart = () => {
     } catch (error) {
       alert("Cập nhật số lượng thất bại");
     }
+  };
+
+  const handleCheckout = () => {
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Vui lòng đăng nhập để tiếp tục');
+      navigate('/login');
+      return;
+    }
+
+    const cartData = {
+      items: items.map(item => ({
+        id: item.product_id._id,
+        name: item.product_id.name,
+        price: item.product_id.discount_price,
+        originalPrice: item.product_id.price,
+        image: item.product_id.images?.[0] || "https://via.placeholder.com/80",
+        rating: 4,
+        quantity: item.quantity
+      })),
+      subtotal: subTotal,
+      shipping: shipping,
+      total: total
+    };
+    
+    const userData = user ? {
+      fullName: user.name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      address: user.address || '',
+      city: user.city || '',
+      zipCode: user.zipCode || ''
+    } : {
+      fullName: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      zipCode: ''
+    };
+    
+    navigate('/check-out', {
+      state: { cartData, userData }
+    });
   };
 
   return (
@@ -157,7 +205,10 @@ const Cart = () => {
               >
                 Continue Shopping
               </Link>
-              <button className="bg-green-400 text-white text-xs px-4 py-1 rounded-md hover:bg-green-500">
+              <button 
+                onClick={handleCheckout}
+                className="bg-green-400 text-white text-xs px-4 py-1 rounded-md hover:bg-green-500"
+              >
                 Check Out
               </button>
             </div>
