@@ -2,15 +2,17 @@ import React from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from 'hooks/useCart';
 import { useProducts } from 'hooks/useProduct';
+import { useUser } from 'hooks/useUser';
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
 
 const Cart = () => {
   const { data: cart, isLoading } = useCart();
   const { data: products, loading } = useProducts();
+  const { data: user } = useUser();
   const queryClient = useQueryClient();
-const navigate = useNavigate();
+
+  const navigate = useNavigate();
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -67,37 +69,74 @@ const navigate = useNavigate();
     }
   };
 
-const handleCheckout = () => {
-  const token = localStorage.getItem("token");
-  const userString = localStorage.getItem("user");
+  const handleCheckout = () => {
+    // Kiểm tra đăng nhập
+    const token = localStorage.getItem('token');
+    if (!token) {
+      alert('Vui lòng đăng nhập để tiếp tục');
+      navigate('/login');
+      return;
+    }
 
-  if (!token || !userString) {
-    toast.error("Vui lòng đăng nhập để thanh toán!", { icon: "⚠️" });
-    setTimeout(() => navigate("/login"), 3000);
-    return;
-  }
+   const cartData = {
+  items: items.map(item => {
+    const hasVariant = !!item.variant_id;
 
-  const userData = JSON.parse(userString); // vẫn dùng tạm để lấy userId
+    const discountPrice = hasVariant
+      ? item.variant_id.discount_price
+      : item.product_id.discount_price ?? item.product_id.price;
 
-  if (!cart || !cart.items || cart.items.length === 0) {
-    alert("Giỏ hàng trống");
-    return;
-  }
+    const originalPrice = hasVariant
+      ? item.variant_id.price
+      : item.product_id.price;
 
-  const selectedItems = cart.items.map((item) => ({
-    product_id: item.product_id,
-    variant_id: item.variant_id || null,
-    quantity: item.quantity,
-  }));
-
-  navigate("/checkout", {
-    state: {
-      selectedItems,
-      isFromCart: true,
-    },
-  });
+    return {
+      id: item.product_id._id,
+      name: item.product_id.name,
+      price: discountPrice,
+      originalPrice: originalPrice,
+      image: hasVariant
+        ? item.variant_id.image || item.product_id.images?.[0] || "https://via.placeholder.com/80"
+        : item.product_id.images?.[0] || "https://via.placeholder.com/80",
+      rating: 4,
+      quantity: item.quantity,
+      variant: hasVariant
+        ? {
+            discount_price: item.variant_id.discount_price,
+            price: item.variant_id.price,
+            size: item.variant_id.size,
+            fragrance: item.variant_id.fragrance,
+            image: item.variant_id.image
+          }
+        : undefined
+    };
+  }),
+  subtotal: subTotal,
+  shipping: shipping,
+  total: total
 };
 
+    
+    const userData = user ? {
+      fullName: user.name || '',
+      email: user.email || '',
+      phone: user.phone || '',
+      address: user.address || '',
+      city: user.city || '',
+      zipCode: user.zipCode || ''
+    } : {
+      fullName: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      zipCode: ''
+    };
+    
+    navigate('/check-out', {
+      state: { cartData, userData }
+    });
+  };
 
   return (
     <div className="bg-white text-gray-700 font-sans">
@@ -200,12 +239,13 @@ const handleCheckout = () => {
               >
                 Continue Shopping
               </Link>
-          <button
-  onClick={handleCheckout}
-  className="bg-green-400 text-white text-xs px-4 py-1 rounded-md hover:bg-green-500"
->
-  Check Out
-</button>
+
+              <button 
+                onClick={handleCheckout}
+                className="bg-green-400 text-white text-xs px-4 py-1 rounded-md hover:bg-green-500"
+              >
+                Check Out
+              </button>
             </div>
           </div>
         </div>
