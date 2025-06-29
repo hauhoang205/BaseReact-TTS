@@ -102,6 +102,7 @@ const Cart = () => {
       quantity: item.quantity,
       variant: hasVariant
         ? {
+          _id: item.variant_id._id,
             discount_price: item.variant_id.discount_price,
             price: item.variant_id.price,
             size: item.variant_id.size,

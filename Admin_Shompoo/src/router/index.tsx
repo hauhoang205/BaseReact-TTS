@@ -15,6 +15,9 @@ import CategoryEdit from "pages/Category/CategoryEdit";
 import CategoryDelete from "pages/Category/CategoryDelete";
 import Login from "pages/Login/Login";
 import PrivateRoute from "components/auth/PrivateRoute";
+import OrderList from "pages/Order/OrderList";
+import OrderDetail from "pages/Order/OrderDetail";
+import OrderUpdate from "pages/Order/OrderUpdate";
 
 export const router = createBrowserRouter([
     {
@@ -81,7 +84,18 @@ export const router = createBrowserRouter([
         path: "admin-list",
         element: <AdminList />,
       },
-       
+        {
+        path: "order-manage",
+        element: <OrderList />,
+      },
+        {
+        path: "order-detail/:id",
+        element: <OrderDetail />,
+      },
+         {
+        path: "order-update/:id",
+        element: <OrderUpdate />,
+      },
     ],
   },
 

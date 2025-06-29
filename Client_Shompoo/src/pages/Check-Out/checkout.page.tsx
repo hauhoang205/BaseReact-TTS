@@ -11,6 +11,7 @@ interface CartItem {
   rating: number;
   quantity: number;
   variant?: {
+     _id: string;
     discount_price: number;
     price: number;
     size?: string;
@@ -74,18 +75,26 @@ function CheckOutPage() {
     setIsSubmitting(true);
     
     try {
+      console.log("🧪 Submit cart items:", cartData.items);
+
       const orderData = {
         items: cartData.items.map(item => ({
           product_id: item.id,
+variant_id: (item.variant as { _id: string })?._id,
           quantity: item.quantity,
-price: item.variant?.discount_price ?? item.price
+price: item.variant?.discount_price ?? item.price,
+
         })),
         shipping_address: {
           address: customerInfo.address,
           city: customerInfo.city,
-          country: 'Vietnam'
+          country: 'Vietnam',
+           phone: customerInfo.phone,
         },
-        payment_method: paymentMethod as 'cash_on_delivery' | 'vnpay'
+        payment_method: paymentMethod as 'cash_on_delivery' | 'vnpay',
+         subtotal: cartData.subtotal,
+  shipping_fee: cartData.shipping,
+  total_amount: cartData.total
       };
       
       const result = await createOrderMutation.mutateAsync(orderData);

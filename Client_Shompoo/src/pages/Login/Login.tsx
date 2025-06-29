@@ -40,6 +40,9 @@ const handleSubmit = async (e: React.FormEvent) => {
     const { user, accessToken } = res.data.data;
     localStorage.setItem('userInfo', JSON.stringify(user));
     localStorage.setItem('token', accessToken);
+
+        window.dispatchEvent(new Event('storage'));
+
     setSuccess('Đăng nhập thành công!');
     setTimeout(() => navigate('/'), 1500);
   } catch (err: any) {
