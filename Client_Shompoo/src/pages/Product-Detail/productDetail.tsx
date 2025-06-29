@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import type { Product } from "types/product";
 import { getAllProducts } from "services/product/product.service";
+import { useWishlist, useAddToWishlist, useRemoveFromWishlist } from "hooks/useWishlist";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -11,7 +12,13 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-  const nav = useNavigate()
+  const nav = useNavigate();
+  
+  const { data: wishlistData } = useWishlist();
+  const addToWishlistMutation = useAddToWishlist();
+  const removeFromWishlistMutation = useRemoveFromWishlist();
+  
+  const isInWishlist = wishlistData?.some((item: any) => item.product_id._id === id);
   // Lấy chi tiết sản phẩm
   useEffect(() => {
     const fetchProduct = async () => {
@@ -84,6 +91,25 @@ const ProductDetail = () => {
     alert("Thêm vào giỏ hàng thất bại");
   }
 };
+
+  const handleWishlistToggle = async () => {
+    if (!localStorage.getItem('token')) {
+      alert('Bạn cần đăng nhập để sử dụng tính năng này');
+      return;
+    }
+    
+    try {
+      if (isInWishlist) {
+        await removeFromWishlistMutation.mutateAsync(id!);
+        alert('Đã xóa khỏi danh sách yêu thích');
+      } else {
+        await addToWishlistMutation.mutateAsync(id!);
+        alert('Đã thêm vào danh sách yêu thích');
+      }
+    } catch (error: any) {
+      alert(error.response?.data?.message || 'Có lỗi xảy ra');
+    }
+  };
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
@@ -144,7 +170,7 @@ const ProductDetail = () => {
             <li><span className="font-semibold">Xuất xứ:</span> {product.origin}</li>
           </ul>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-4">
             <button onClick={handleDecrease} className="bg-gray-700 text-white px-3 py-1 rounded">
               -
             </button>
@@ -152,10 +178,22 @@ const ProductDetail = () => {
             <button onClick={handleIncrease} className="bg-gray-700 text-white px-3 py-1 rounded">
               +
             </button>
-            <button  onClick={handleAddToCart} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2 text-sm">
+            <button onClick={handleAddToCart} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-2 text-sm">
               Thêm vào giỏ hàng
             </button>
           </div>
+          
+          <button
+            onClick={handleWishlistToggle}
+            className={`flex items-center gap-2 px-4 py-2 rounded border transition-colors ${
+              isInWishlist 
+                ? 'bg-red-50 border-red-300 text-red-600 hover:bg-red-100' 
+                : 'bg-gray-50 border-gray-300 text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <i className={`fas fa-heart ${isInWishlist ? 'text-red-500' : 'text-gray-400'}`}></i>
+            {isInWishlist ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
+          </button>
         </div>
       </div>
 

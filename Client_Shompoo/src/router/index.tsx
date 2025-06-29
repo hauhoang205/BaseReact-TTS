@@ -4,6 +4,7 @@ import Cart from "pages/Cart/Cart";
 import CheckOutPage from "pages/Check-Out/checkout.page";
 import OrderPage from "pages/Order/Order.page";
 import ProductPage from "pages/Products/Product.page";
+import WishlistPage from "pages/Wishlist/Wishlist.page";
 import Home from "pages/Home";
 import Login from "pages/Login/Login";
 import ProductDetail from "pages/Product-Detail/productDetail";
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
       {
         path: "/orders",
         element: <OrderPage />
+      },
+      {
+        path: "/wishlist",
+        element: <WishlistPage />
       }
     ],
   },

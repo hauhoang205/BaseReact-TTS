@@ -1,6 +1,7 @@
 import { useSearchProducts } from 'hooks/useSearch';
 import { useAuthSimple, useLogoutSimple } from 'hooks/useAuthSimple';
 import { useCart } from 'hooks/useCart';
+import { useWishlist } from 'hooks/useWishlist';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ const Header = (props: Props) => {
   const { data, loading, error, query, setQuery } = useSearchProducts();
   const { user: authData, isLoggedIn: isLoggedInSimple } = useAuthSimple();
   const { data: cartData } = useCart();
+  const { data: wishlistData } = useWishlist();
   const logout = useLogoutSimple();
   const nav = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -29,6 +31,7 @@ const Header = (props: Props) => {
   
   const isLoggedIn = isLoggedInSimple;
   const cartCount = cartData?.items?.reduce((total: number, item: any) => total + item.quantity, 0) || 0;
+  const wishlistCount = wishlistData?.length || 0;
 
   // Click ngoài dropdown tìm kiếm
   useEffect(() => {
@@ -252,13 +255,13 @@ const Header = (props: Props) => {
             </Link>
           )}
 
-          <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
+          <Link to="/wishlist" className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
             <i className="fas fa-heart text-[22px]"></i>
             <div className="leading-none">
               <div>Wishlist</div>
-              <div className="font-semibold text-[13px]">0-ITEMS</div>
+              <div className="font-semibold text-[13px]">{wishlistCount}-ITEMS</div>
             </div>
-          </div>
+          </Link>
 
           <Link to="/cart" className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
             <i className="fas fa-shopping-bag text-[22px]"></i>
