@@ -15,6 +15,10 @@ import CategoryEdit from "pages/Category/CategoryEdit";
 import CategoryDelete from "pages/Category/CategoryDelete";
 import Login from "pages/Login/Login";
 import PrivateRoute from "components/auth/PrivateRoute";
+import VariantList from "pages/variants/VariantsList";
+import VariantAdd from "pages/variants/VariantsAdd";
+import VariantEdit from "pages/variants/VariantsEdit";
+import VariantTrash from "pages/variants/VariantTrash";
 
 export const router = createBrowserRouter([
     {
@@ -81,6 +85,23 @@ export const router = createBrowserRouter([
         path: "admin-list",
         element: <AdminList />,
       },
+      {
+  path: "variant-list",
+  element: <VariantList />,
+},
+{
+  path: "variant-add",
+  element: <VariantAdd />,
+},
+{
+  path: "variant-edit/:id",
+  element: <VariantEdit />,
+},
+{
+  path: "variant-trash",
+  element: <VariantTrash />,
+},
+
        
     ],
   },
