@@ -3,6 +3,8 @@ import About from "pages/About/About";
 import Cart from "pages/Cart/Cart";
 import CheckOutPage from "pages/Check-Out/checkout.page";
 import OrderPage from "pages/Order/Order.page";
+import OrderDetailPage from "pages/Order/OrderDetail.page";
+import PaymentCallback from "pages/Payment/PaymentCallback";
 import ProductPage from "pages/Products/Product.page";
 import Home from "pages/Home";
 import Login from "pages/Login/Login";
@@ -56,6 +58,14 @@ export const router = createBrowserRouter([
       {
         path: "/orders",
         element: <OrderPage />
+      },
+      {
+        path: "/account/orders/:orderId",
+        element: <OrderDetailPage />
+      },
+      {
+        path: "/payment/callback",
+        element: <PaymentCallback />
       }
     ],
   },

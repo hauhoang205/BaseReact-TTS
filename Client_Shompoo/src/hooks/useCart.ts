@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 export const useCart = () => {
@@ -22,5 +22,24 @@ export const useCart = () => {
     },
     enabled: !!localStorage.getItem('token'),
     retry: false
+  });
+};
+
+export const useClearCart = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async () => {
+      const token = localStorage.getItem('token');
+      const response = await axios.delete('http://localhost:8000/api/client/carts/clear', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+    },
   });
 };

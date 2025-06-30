@@ -38,6 +38,26 @@ const fetchOrders = async () => {
   }
 };
 
+const fetchOrderDetail = async (orderId: string) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.get(`http://localhost:8000/api/client/orders/${orderId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data.data;
+};
+
+const cancelOrder = async (orderId: string) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.patch(`http://localhost:8000/api/client/orders/${orderId}/cancel`, {}, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
 const createOrder = async (orderData: CreateOrderData) => {
   const token = localStorage.getItem('token');
   const response = await axios.post('http://localhost:8000/api/client/orders', orderData, {
@@ -57,6 +77,14 @@ export const useOrders = () => {
   });
 };
 
+export const useOrderDetail = (orderId: string) => {
+  return useQuery({
+    queryKey: ['order', orderId],
+    queryFn: () => fetchOrderDetail(orderId),
+    enabled: !!orderId && !!localStorage.getItem('token'),
+  });
+};
+
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
   
@@ -65,6 +93,17 @@ export const useCreateOrder = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+    },
+  });
+};
+
+export const useCancelOrder = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: cancelOrder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
     },
   });
 };

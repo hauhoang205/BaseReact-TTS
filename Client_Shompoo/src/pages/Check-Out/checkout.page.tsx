@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCreateOrder } from 'hooks/useOrder';
+import { useClearCart } from 'hooks/useCart';
 
 interface CartItem {
   id: string;
@@ -32,6 +33,7 @@ function CheckOutPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const createOrderMutation = useCreateOrder();
+  const clearCartMutation = useClearCart();
   const [cartData, setCartData] = useState<CartData | null>(null);
   const [customerInfo, setCustomerInfo] = useState({
     fullName: '',
@@ -100,6 +102,9 @@ price: item.variant?.discount_price ?? item.price,
       const result = await createOrderMutation.mutateAsync(orderData);
       
       if (result.success) {
+        // Xóa giỏ hàng sau khi đặt hàng thành công
+        await clearCartMutation.mutateAsync();
+        
         alert(result.message || 'Đặt hàng thành công!');
         
         // Nếu là VNPAY, chuyển hướng đến trang thanh toán

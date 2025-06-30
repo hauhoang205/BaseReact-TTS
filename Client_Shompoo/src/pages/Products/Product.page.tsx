@@ -21,6 +21,7 @@ const ProductPage = () => {
     const fetchCategories = async () => {
       try {
         const categoriesData = await getCategories();
+        console.log('👉 Categories loaded:', categoriesData);
         setCategories(categoriesData);
       } catch (error) {
         console.error('Lỗi khi tải danh mục:', error);
@@ -33,12 +34,23 @@ const ProductPage = () => {
   useEffect(() => {
     if (!products) return;
 
+    console.log('👉 All products:', products);
+    console.log('👉 Selected category:', selectedCategory);
+
     let filtered = [...products];
 
     // Filter by category
     if (selectedCategory) {
-      filtered = filtered.filter(product => product.category_id === selectedCategory);
+      filtered = filtered.filter(product => {
+        const categoryId = typeof product.category_id === 'object' 
+          ? product.category_id._id 
+          : product.category_id;
+        console.log('👉 Product category_id:', categoryId, 'vs selected:', selectedCategory);
+        return categoryId === selectedCategory;
+      });
     }
+
+    console.log('👉 Filtered products:', filtered);
 
     // Filter by price range
     if (priceRange) {

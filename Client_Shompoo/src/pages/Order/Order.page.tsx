@@ -1,8 +1,11 @@
-import { useOrders } from 'hooks/useOrder';
+import { useOrders, useCancelOrder } from 'hooks/useOrder';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 function OrderPage() {
   const { data: ordersData, isLoading, error } = useOrders();
+  const cancelOrderMutation = useCancelOrder();
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
 
   if (isLoading) return <div className="text-center py-8">Loading...</div>;
   if (error) return <div className="text-center py-8 text-red-500">Có lỗi xảy ra khi tải đơn hàng</div>;
@@ -52,6 +55,20 @@ function OrderPage() {
     }
   };
 
+  const handleCancelOrder = async (orderId: string) => {
+    if (window.confirm('Bạn có chắc chắn muốn hủy đơn hàng này?')) {
+      setCancellingOrderId(orderId);
+      try {
+        await cancelOrderMutation.mutateAsync(orderId);
+        alert('Hủy đơn hàng thành công!');
+      } catch (error) {
+        alert('Có lỗi xảy ra khi hủy đơn hàng');
+      } finally {
+        setCancellingOrderId(null);
+      }
+    }
+  };
+
   const renderTable = (title: string, orders: any[], type?: 'pending') => (
     <section className="mb-12 border border-gray-200 rounded-md shadow-sm p-6">
       <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-3">
@@ -93,8 +110,14 @@ function OrderPage() {
                 <Link to={`/account/orders/${order._id}`}>
                   <button className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-1.5 px-3 rounded-md transition">Xem</button>
                 </Link>
-                {type === 'pending' && (
-                  <button className="bg-red-500 hover:bg-red-600 text-white text-xs sm:text-sm font-semibold py-1.5 px-3 rounded-md transition">Hủy</button>
+                {order.order_status === 'pending' && (
+                  <button 
+                    onClick={() => handleCancelOrder(order._id)}
+                    disabled={cancellingOrderId === order._id}
+                    className="bg-red-500 hover:bg-red-600 disabled:bg-red-300 text-white text-xs sm:text-sm font-semibold py-1.5 px-3 rounded-md transition"
+                  >
+                    {cancellingOrderId === order._id ? 'Đang hủy...' : 'Hủy'}
+                  </button>
                 )}
               </td>
             </tr>
