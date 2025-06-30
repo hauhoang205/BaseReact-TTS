@@ -3,8 +3,6 @@ import About from "pages/About/About";
 import Cart from "pages/Cart/Cart";
 import CheckOutPage from "pages/Check-Out/checkout.page";
 import OrderPage from "pages/Order/Order.page";
-import OrderDetailPage from "pages/Order/OrderDetail.page";
-import PaymentCallback from "pages/Payment/PaymentCallback";
 import ProductPage from "pages/Products/Product.page";
 import Home from "pages/Home";
 import Login from "pages/Login/Login";
@@ -12,6 +10,8 @@ import ProductDetail from "pages/Product-Detail/productDetail";
 import ProductInCategory from "pages/ProductInCategory/productInCategory";
 import Register from "pages/Register/Register";
 import { createBrowserRouter } from "react-router-dom";
+import OrderDetailPage from "pages/Order/OrderDetailPage";
+import WishlistPage from "pages/Wishlist/Whishlist.page";
 
 
 export const router = createBrowserRouter([
@@ -59,13 +59,13 @@ export const router = createBrowserRouter([
         path: "/orders",
         element: <OrderPage />
       },
-      {
+        {
         path: "/account/orders/:orderId",
         element: <OrderDetailPage />
       },
-      {
-        path: "/payment/callback",
-        element: <PaymentCallback />
+         {
+        path: "/wishlist",
+        element: <WishlistPage />
       }
     ],
   },

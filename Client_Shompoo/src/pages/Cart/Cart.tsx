@@ -102,7 +102,7 @@ const Cart = () => {
       quantity: item.quantity,
       variant: hasVariant
         ? {
-          _id: item.variant_id._id,
+_id: item.variant_id._id,
             discount_price: item.variant_id.discount_price,
             price: item.variant_id.price,
             size: item.variant_id.size,
@@ -184,7 +184,7 @@ const Cart = () => {
                         className="w-10 h-10 object-contain"
                         height={40}
                         src={item.product_id.images?.[0] || "https://via.placeholder.com/40"}
-                        width={40}
+width={40}
                       />
                       <div>
   <div className="font-semibold">{item.product_id.name}</div>
@@ -257,7 +257,7 @@ const Cart = () => {
           <Link
             to={`/products/${item._id}`}
             key={item._id}
-            className="w-[280px] border border-gray-200 rounded-md p-3 flex flex-col items-center text-center shadow hover:shadow-lg transition flex-shrink-0 hover:scale-105"
+className="w-[280px] border border-gray-200 rounded-md p-3 flex flex-col items-center text-center shadow hover:shadow-lg transition flex-shrink-0 hover:scale-105"
           >
             <img
               src={item.images?.[0]}

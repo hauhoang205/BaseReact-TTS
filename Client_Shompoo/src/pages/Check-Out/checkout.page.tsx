@@ -1,7 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCreateOrder } from 'hooks/useOrder';
-import { useClearCart } from 'hooks/useCart';
+import { useQueryClient } from "@tanstack/react-query";
+import axios from 'axios';
 
 interface CartItem {
   id: string;
@@ -32,8 +33,8 @@ interface CartData {
 function CheckOutPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const createOrderMutation = useCreateOrder();
-  const clearCartMutation = useClearCart();
   const [cartData, setCartData] = useState<CartData | null>(null);
   const [customerInfo, setCustomerInfo] = useState({
     fullName: '',
@@ -102,16 +103,18 @@ price: item.variant?.discount_price ?? item.price,
       const result = await createOrderMutation.mutateAsync(orderData);
       
       if (result.success) {
-        // Xóa giỏ hàng sau khi đặt hàng thành công
-        await clearCartMutation.mutateAsync();
-        
         alert(result.message || 'Đặt hàng thành công!');
-        
+      
         // Nếu là VNPAY, chuyển hướng đến trang thanh toán
         if (paymentMethod === 'vnpay' && result.data?.redirect_url) {
           window.location.href = result.data.redirect_url;
         } else {
+           const token = localStorage.getItem('token');
+    await axios.delete("http://localhost:8000/api/client/carts/clear", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
           // Nếu là COD, chuyển đến trang orders
+              queryClient.invalidateQueries({ queryKey: ['cart'] });
           navigate('/orders');
         }
       }

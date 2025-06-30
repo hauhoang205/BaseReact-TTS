@@ -1,6 +1,6 @@
+import { useClearCart } from 'hooks/useCart';
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useClearCart } from 'hooks/useCart';
 
 function PaymentCallback() {
   const [searchParams] = useSearchParams();

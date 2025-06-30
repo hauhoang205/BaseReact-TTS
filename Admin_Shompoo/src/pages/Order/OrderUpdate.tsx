@@ -17,7 +17,7 @@ const getValidNextStatuses = (current: string): string[] => {
     case "pending":
       return ["processing", "cancelled"];
     case "processing":
-      return ["shipped", "cancelled"];
+      return ["shipped"];
     case "shipped":
       return ["delivered"];
     case "delivered":

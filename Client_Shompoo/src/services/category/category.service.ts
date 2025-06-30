@@ -11,7 +11,7 @@ export const getCategories = async (search?: string): Promise<ICategory[]> => {
     const response = await axios.get(url, { params });
     console.log('👉 Response data (categories):', response.data);
 
-    const categories = response.data.data?.data || response.data.data || [];
+    const categories = response.data.data.data || response.data || [];
     if (!Array.isArray(categories)) {
       console.warn('Dữ liệu danh mục không phải mảng, trả về mảng rỗng:', categories);
       return [];

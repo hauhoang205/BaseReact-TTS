@@ -1,100 +1,100 @@
-import { MailOutlined, AppstoreOutlined, SettingOutlined, UserOutlined, FolderOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
-import type { MenuProps } from 'antd';
-
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Menu } from "antd";
+import type { MenuProps } from "antd";
+import {
+  MailOutlined,
+  AppstoreOutlined,
+  FolderOutlined,
+  UserOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const AdminSidebar = () => {
-  type MenuItem = Required<MenuProps>['items'][number];
-  const navigate = useNavigate()
-  const items: MenuItem[] = [
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  /* ------------------------------------------------------------------------
+   * CẤU HÌNH MENU
+   *  - key của MỌI mục con chính là đường dẫn cần điều hướng.
+   *  - key của mục cấp cha (submenu) chỉ để nhóm, không navigate trực tiếp.
+   * ---------------------------------------------------------------------- */
+  const items: MenuProps["items"] = [
     {
-      key: 'sub1',
-      label: 'Dashboard',
-      icon: <MailOutlined />
+      key: "/admin/dashboard",
+      icon: <MailOutlined />,
+      label: "Dashboard",
     },
     {
-      key: 'sub2',
-      label: 'Quản lý sản phẩm',
+      key: "products",
       icon: <AppstoreOutlined />,
+      label: "Quản lý sản phẩm",
       children: [
-        { key: 'productlist', label: 'Danh sách sản phẩm' },
-        { key: 'addproduct', label: 'Thêm mới sản phẩm' },
+        { key: "/admin/product-list", label: "Danh sách sản phẩm" },
+        { key: "/admin/product-add", label: "Thêm mới sản phẩm" },
       ],
     },
     {
-      key: 'sub3',
-      label: 'Quản lý danh mục',
+      key: "categories",
       icon: <FolderOutlined />,
+      label: "Quản lý danh mục",
       children: [
-        { key: 'categorylist', label: 'Danh sách danh mục' },
-        { key: 'addcategory', label: 'Thêm mới danh mục' },
+        { key: "/admin/category-list", label: "Danh sách danh mục" },
+        { key: "/admin/category-add", label: "Thêm mới danh mục" },
       ],
     },
     {
-      key: 'sub5',
-      label: 'Quản lý tài khoản',
+      key: "accounts",
       icon: <UserOutlined />,
+      label: "Quản lý tài khoản",
       children: [
-        { key: 'userlist', label: 'Danh sách người dùng' },
-        { key: 'adminList', label: 'Danh sách admin' },
+        { key: "/admin/user-list", label: "Danh sách người dùng" },
+        { key: "/admin/admin-list", label: "Danh sách admin" },
       ],
     },
     {
-      type: 'divider',
+      key: "/admin/order-manage",
+      icon: <SettingOutlined />,
+      label: "Quản lý đơn hàng",
     },
     {
-  key: 'sub4',
-  label: 'Quản lý đơn hàng',
-  icon: <SettingOutlined />,
-}
+      key: "variants",
+      icon: <AppstoreOutlined />,
+      label: "Quản lý biến thể",
+      children: [
+        { key: "/admin/variant-list", label: "Danh sách biến thể" },
+        { key: "/admin/variant-add", label: "Thêm mới biến thể" },
+        { key: "/admin/variant-trash", label: "Biến thể đã xoá" },
+      ],
+    },
   ];
 
-  const onClick: MenuProps['onClick'] = ({key}) => {
-      switch(key)
-      {
-        case "addproduct":
-          navigate("/admin/product-add")
-          break;
-        case "productlist":
-          navigate("/admin/product-list") 
-          break;
-
-        case "categorylist":
-          navigate("/admin/category-list")
-          break;
-        case "addcategory":
-          navigate("/admin/category-add")
-          break;
-
-        case "userlist":
-          navigate("/admin/user-list")
-          break;
-        case "adminList":
-          navigate("/admin/admin-list")
-          break;
-        case "sub4": 
-          navigate("/admin/order-manage")
-          break;
-        default:
-          navigate("") 
-          break;
-      }
+  /* ------------------------- Handle click điều hướng ------------------------ */
+  const handleClick: MenuProps["onClick"] = ({ key }) => {
+    // key chính là route
+    navigate(key);
   };
 
+  /* -------------- Tự động mở submenu chứa route hiện tại ------------------- */
+  const defaultOpen = items
+    .filter(
+      (it: any) =>
+        it?.children?.some((child: any) => child.key === location.pathname)
+    )
+    .map((it: any) => it.key);
+
   return (
-    <div className='w-1/5 h-screen bg-white'>
+    <aside className="w-1/5 h-screen bg-white shadow">
       <Menu
-        onClick={onClick}
-        style={{ width: '100%' }}
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
         mode="inline"
+        style={{ height: "100%", borderRight: 0 }}
+        selectedKeys={[location.pathname]}
+        defaultOpenKeys={defaultOpen}
+        onClick={handleClick}
         items={items}
       />
-    </div>
-  )
-}
+    </aside>
+  );
+};
 
-export default AdminSidebar
+export default AdminSidebar;

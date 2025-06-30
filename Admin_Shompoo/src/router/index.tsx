@@ -18,6 +18,9 @@ import PrivateRoute from "components/auth/PrivateRoute";
 import OrderList from "pages/Order/OrderList";
 import OrderDetail from "pages/Order/OrderDetail";
 import OrderUpdate from "pages/Order/OrderUpdate";
+import VariantList from "pages/variants/VariantsList";
+import VariantAdd from "pages/variants/VariantsAdd";
+import VariantTrash from "pages/variants/VariantTrash";
 
 export const router = createBrowserRouter([
     {
@@ -96,6 +99,20 @@ export const router = createBrowserRouter([
         path: "order-update/:id",
         element: <OrderUpdate />,
       },
+      {
+  path: "variant-list",
+  element: <VariantList />,
+},
+{
+  path: "variant-add",
+  element: <VariantAdd />,
+},
+
+{
+  path: "variant-trash",
+  element: <VariantTrash />,
+},
+
     ],
   },
 

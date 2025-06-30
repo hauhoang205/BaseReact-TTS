@@ -1,6 +1,7 @@
 import { useSearchProducts } from 'hooks/useSearch';
 import { useAuthSimple, useLogoutSimple } from 'hooks/useAuthSimple';
 import { useCart } from 'hooks/useCart';
+import { useWishlist } from 'hooks/useWishlist';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ const Header = (props: Props) => {
   const { data, loading, error, query, setQuery } = useSearchProducts();
   const { user: authData, isLoggedIn: isLoggedInSimple } = useAuthSimple();
   const { data: cartData } = useCart();
+  const { data: wishlistData } = useWishlist();
   const logout = useLogoutSimple();
   const nav = useNavigate();
   const [showDropdown, setShowDropdown] = useState(false);
@@ -29,6 +31,7 @@ const Header = (props: Props) => {
   
   const isLoggedIn = isLoggedInSimple;
   const cartCount = cartData?.items?.reduce((total: number, item: any) => total + item.quantity, 0) || 0;
+  const wishlistCount = wishlistData?.length || 0;
 
   // Click ngoài dropdown tìm kiếm
   useEffect(() => {
@@ -70,7 +73,7 @@ const Header = (props: Props) => {
       if (
         categoryDropdownRef.current &&
         !categoryDropdownRef.current.contains(event.target as Node)
-      ) {
+) {
         setShowCategoryDropdown(false);
       }
     }
@@ -151,7 +154,7 @@ const Header = (props: Props) => {
               type="text"
               value={query}
               onChange={(e) => {
-                setQuery(e.target.value);
+setQuery(e.target.value);
                 setShowDropdown(true);
               }}
               onFocus={() => {
@@ -204,7 +207,7 @@ const Header = (props: Props) => {
                 <i className="fas fa-user text-[22px]"></i>
                 <div className="leading-none">
                   <div>Xin chào</div>
-                  <div className="font-semibold text-[13px]">{authData?.fullname || 'User'}</div>
+                  <div className="font-semibold text-[13px]">{authData?.name || authData?.fullname || 'User'}</div>
                 </div>
                 <i className="fas fa-chevron-down text-[10px]"></i>
               </div>
@@ -218,7 +221,7 @@ const Header = (props: Props) => {
                     }}
                   >
                     Đơn hàng của tôi
-                  </button>
+</button>
                   <button
                     className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-700"
                     onClick={() => {
@@ -252,19 +255,17 @@ const Header = (props: Props) => {
             </Link>
           )}
 
-          <div className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
+          <Link to="/wishlist" className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
             <i className="fas fa-heart text-[22px]"></i>
             <div className="leading-none">
               <div>Wishlist</div>
-              <div className="font-semibold text-[13px]">0-ITEMS</div>
+              <div className="font-semibold text-[13px]">{wishlistCount}-ITEMS</div>
             </div>
-          </div>
+          </Link>
 
-
-      <Link to="/cart" className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
+          <Link to="/cart" className="flex items-center space-x-2 cursor-pointer hover:text-gray-900">
             <i className="fas fa-shopping-bag text-[22px]"></i>
-           
-              <div className="leading-none">
+            <div className="leading-none">
               <div>Cart</div>
               <div className="font-semibold text-[13px]">{cartCount}-ITEMS</div>
             </div>
@@ -290,7 +291,7 @@ const Header = (props: Props) => {
               {categories.length === 0 ? (
                 <div className="p-3 text-gray-500 text-center">Loading...</div>
               ) : (
-                categories
+categories
                   .filter((cat) => cat.name !== 'Danh mục mặc định')
                   .map((cat) => (
                     <button

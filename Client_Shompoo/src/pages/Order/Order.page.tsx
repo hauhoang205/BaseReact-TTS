@@ -73,7 +73,7 @@ function OrderPage() {
     <section className="mb-12 border border-gray-200 rounded-md shadow-sm p-6">
       <div className="flex justify-between items-center mb-6 border-b border-gray-200 pb-3">
         <h2 className="text-sm sm:text-base font-semibold uppercase text-gray-500 tracking-wide">{title}</h2>
-        {type === 'pending' && (
+{type === 'pending' && (
           <Link to="/products">
             <button className="bg-green-500 hover:bg-green-600 text-white text-xs sm:text-sm font-semibold py-1.5 sm:py-2 px-3 sm:px-4 rounded-md transition">
               Mua thêm
@@ -138,7 +138,7 @@ function OrderPage() {
       <main className="max-w-5xl w-full">
         <section className="text-center mb-10">
           <h1 className="text-gray-900 font-semibold text-2xl sm:text-3xl mb-1">
-            Danh sách <span className="text-green-600">Đơn hàng</span>
+Danh sách <span className="text-green-600">Đơn hàng</span>
           </h1>
           <p className="text-gray-500 text-sm sm:text-base">
             Quản lý đơn hàng của bạn dễ dàng hơn.
